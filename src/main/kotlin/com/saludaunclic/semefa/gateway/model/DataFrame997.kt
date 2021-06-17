@@ -1,5 +1,8 @@
 package com.saludaunclic.semefa.gateway.model
 
+import pe.gob.susalud.jr.transaccion.susalud.bean.In997RegafiUpdate
+
+
 class DataFrame997(
     val feTransaccion: String? = null,
     val hoTransaccion: String? = null,
@@ -10,7 +13,8 @@ class DataFrame997(
     val noTransaccion: String? = null,
     val nuControl: String? = null,
     val nuControlST: String? = null,
-    val excepciones: List<List<String>>? = emptyList()
+    val excepciones: List<List<String>>? = emptyList(),
+    val dato: In997RegafiUpdate? = null
 ) {
     override fun toString(): String =
         "DataFrame997(" +

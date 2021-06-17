@@ -1,6 +1,5 @@
 package com.saludaunclic.semefa.gateway.model
 
-import com.saludaunclic.semefa.gateway.x12.data.fromIn271
 import pe.gob.susalud.jr.transaccion.susalud.bean.In271RegafiUpdate
 
 class DataFrame271(
@@ -15,12 +14,9 @@ class DataFrame271(
     val noTransaccion: String? = null,
     val tiFinalidad: String? = null,
     val data: List<List<String>>? = emptyList(),
-    val dataExt: List<List<String>>? = emptyList()
+    val dataExt: List<List<String>>? = emptyList(),
+    val dato: In271RegafiUpdate? = null
 ) {
-    constructor(in271: In271RegafiUpdate): this() {
-        fromIn271(in271)
-    }
-
     override fun toString(): String =
         "DataFrame271(" +
             "tiOperacion=$tiOperacion, " +

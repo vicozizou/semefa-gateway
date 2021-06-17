@@ -1,4 +1,4 @@
-package com.saludaunclic.semefa.gateway.mq
+package com.saludaunclic.semefa.gateway.component
 
 import com.ibm.mq.MQGetMessageOptions
 import com.ibm.mq.MQMessage
@@ -6,11 +6,12 @@ import com.ibm.mq.MQQueue
 import com.ibm.mq.MQQueueManager
 import com.ibm.mq.constants.CMQC
 import com.saludaunclic.semefa.gateway.config.MqClientConfig
+import com.saludaunclic.semefa.gateway.model.GatewayConstants
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.codec.Hex
 import org.springframework.stereotype.Component
-import java.util.*
+import java.util.Hashtable
 
 @Component
 class MqClient(val mqClientConfig: MqClientConfig) {
@@ -18,30 +19,32 @@ class MqClient(val mqClientConfig: MqClientConfig) {
         const val NUMBER_OF_GET_TRIES = 2
     }
 
-    private val connectionProps = Hashtable<String, Any>().apply {
-        with(mqClientConfig) {
-            put(CMQC.CHANNEL_PROPERTY, channel)
-            put(CMQC.PORT_PROPERTY, port)
-            put(CMQC.HOST_NAME_PROPERTY, hostname)
-            put(CMQC.APPNAME_PROPERTY, "Aplicacion Afiliacion Online JAVA, SEMEFA-SUSALUD V1.0")
-            put(CMQC.TRANSPORT_PROPERTY, CMQC.TRANSPORT_MQSERIES_CLIENT)
-            logger.info("""
-                Loaded MQ properties:
-                =====================
-                queueManagerName: $queueManagerName
-                queueNameIn: $queueNameIn
-                queueNameOut: $queueNameOut
-                hostname: $hostname 
-                port: $port
-                channel: $channel
-            """.trimIndent())
+    private val connectionProps = Hashtable<String, Any>()
+        .apply {
+            with(mqClientConfig) {
+                put(CMQC.CHANNEL_PROPERTY, channel)
+                put(CMQC.PORT_PROPERTY, port)
+                put(CMQC.HOST_NAME_PROPERTY, hostname)
+                put(CMQC.APPNAME_PROPERTY, "Aplicacion Afiliacion Online JAVA, SEMEFA-SUSALUD V1.0")
+                put(CMQC.TRANSPORT_PROPERTY, CMQC.TRANSPORT_MQSERIES_CLIENT)
+                logger.info("""
+                    Loaded MQ properties:
+                    =====================
+                    queueManagerName: $queueManagerName
+                    queueNameIn: $queueNameIn
+                    queueNameOut: $queueNameOut
+                    hostname: $hostname 
+                    port: $port
+                    channel: $channel
+                """.trimIndent())
+            }
         }
-    }
-    private val messageOptions = MQGetMessageOptions().apply {
-        matchOptions = CMQC.MQMO_MATCH_MSG_ID
-        options = CMQC.MQGMO_WAIT
-        waitInterval = 1000
-    }
+    private val messageOptions = MQGetMessageOptions()
+        .apply {
+            matchOptions = CMQC.MQMO_MATCH_MSG_ID
+            options = CMQC.MQGMO_WAIT
+            waitInterval = 1000
+        }
     private val logger: Logger = LoggerFactory.getLogger(MqClient::class.java)
 
     fun sendMessageSync(message: String): Map<String, String> {
@@ -68,9 +71,6 @@ class MqClient(val mqClientConfig: MqClientConfig) {
             fetchResponse(queueOut, getMessage)
 
             processResponse(response, getMessage)
-        } catch (e: Exception) {
-            logger.error("Error sending sync message: ${e.message}", e)
-            throw e
         } finally {
             closeResources(putMessage, getMessage, queueIn, queueOut, queueManager)
         }
@@ -78,17 +78,16 @@ class MqClient(val mqClientConfig: MqClientConfig) {
         return response
     }
 
-    private fun accessQueue(queueManager: MQQueueManager?,
-                            isIn: Boolean): MQQueue? = with(mqClientConfig) {
-        val name = if (isIn) queueNameIn else queueNameOut
-        logger.info("Accessing queue $name.. ")
-        val queue = queueManager?.accessQueue(
-            name,
-            if (isIn) CMQC.MQOO_OUTPUT
-            else { CMQC.MQOO_INPUT_AS_Q_DEF } or CMQC.MQOO_FAIL_IF_QUIESCING)
-        logger.info("Queue $name accessed")
-        queue
-    }
+    private fun accessQueue(queueManager: MQQueueManager?, isIn: Boolean): MQQueue? =
+        with(mqClientConfig) {
+            val name = if (isIn) queueNameIn else queueNameOut
+            logger.info("Accessing queue $name.. ")
+            val queue = queueManager?.accessQueue(
+                name,
+                (if (isIn) CMQC.MQOO_OUTPUT else CMQC.MQOO_INPUT_AS_Q_DEF) or CMQC.MQOO_FAIL_IF_QUIESCING)
+            logger.info("Queue $name accessed")
+            queue
+        }
 
     private fun fetchResponse(queueOut: MQQueue?, message: MQMessage?) {
         for(i in 1..NUMBER_OF_GET_TRIES) {
@@ -116,8 +115,8 @@ class MqClient(val mqClientConfig: MqClientConfig) {
         val messageId = String(Hex.encode(message.messageId))
         logger.info("Msg Id: $messageId")
 
-        response["MsgId"] = messageId
-        response["Msg"] = xmlDataFrame
+        response[GatewayConstants.MESSAGE_ID_KEY] = messageId
+        response[GatewayConstants.MESSAGE_KEY] = xmlDataFrame
     }
 
     private fun closeResources(putMessage: MQMessage?,
@@ -125,45 +124,37 @@ class MqClient(val mqClientConfig: MqClientConfig) {
                                queueIn: MQQueue?,
                                queueOut: MQQueue?,
                                queueManager: MQQueueManager?) {
-        //clear messages
-        if (putMessage != null) {
-            logger.info("Clear message put")
-            putMessage.clearMessage()
-        }
-        if (getMessage != null) {
-            logger.info("Clear message get")
-            getMessage.clearMessage()
-        }
+        // Clear messages
+        logger.info("Clear message put")
+        putMessage?.clearMessage()
+        logger.info("Clear message get")
+        getMessage?.clearMessage()
         // Close the queues
-        if (queueIn != null) {
-            logger.info("Closing the queueIn")
-            queueIn.close()
-        }
-        if (queueOut != null) {
-            logger.info("Closing the queueOut")
-            queueOut.close()
-        }
+        logger.info("Closing the queueIn")
+        queueIn?.close()
+        logger.info("Closing the queueOut")
+        queueOut?.close()
         // Disconnect from the QueueManager
-        if (queueManager != null) {
-            logger.info("Disconnecting from the Queue Manager")
-            queueManager.disconnect()
+        logger.info("Disconnecting from the Queue Manager")
+        queueManager?.disconnect()
+    }
+
+    private fun createPutMessage(message: String): MQMessage = MQMessage()
+        .apply {
+            logger.info("Creating PUT message")
+            characterSet = 819
+            encoding = 273
+            format = CMQC.MQFMT_STRING
+            writeString(message)
+            logger.info("Message: [ $message ]")
         }
-    }
 
-    private fun createPutMessage(message: String): MQMessage = MQMessage().apply {
-        logger.info("Creating PUT message")
-        characterSet = 819
-        encoding = 273
-        format = CMQC.MQFMT_STRING
-        writeString(message)
-        logger.info("Message: [ $message ]")
-    }
-
-    private fun createGetMessage(message: MQMessage): MQMessage = MQMessage().apply {
-        logger.info("Creating GET message")
-        characterSet = 819
-        encoding = 273
-        messageId = message.messageId
-        logger.info("Message: [ ${message.messageId} ]")
-    }
+    private fun createGetMessage(message: MQMessage): MQMessage = MQMessage()
+        .apply {
+            logger.info("Creating GET message")
+            characterSet = 819
+            encoding = 273
+            messageId = message.messageId
+            logger.info("Message: [ ${message.messageId} ]")
+        }
 }

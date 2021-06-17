@@ -1,7 +1,7 @@
 package com.saludaunclic.semefa.gateway.component
 
 import com.saludaunclic.semefa.gateway.config.ErrorsConfig
-import com.saludaunclic.semefa.gateway.model.Constants
+import com.saludaunclic.semefa.gateway.model.GatewayConstants
 import org.springframework.stereotype.Component
 import java.nio.file.Path
 
@@ -30,7 +30,7 @@ class Errors(val errorsConfig: ErrorsConfig) {
             .bufferedReader()
             .readLines()
             .associate {
-                val line = it.split(Constants.SEPARATOR)
+                val line = it.split(GatewayConstants.SEPARATOR)
                 line[0] to line[1]
             }
 }
