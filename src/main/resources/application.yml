@@ -1,0 +1,23 @@
+server:
+  port: ${SERVER_PORT:8080}
+spring:
+  application:
+    name: gateway-service
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:semefa}
+    username: ${DB_USER:semefa}
+    password: ${DB_PASSWORD:semefa}
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 8
+errors:
+  field-error-file: ${FIELD_ERROR_FILE:classpath:error-campo.csv}
+  description-error-file: ${DESCRIPTION_ERROR_FILE:classpath:error-descripcion.csv}
+mq:
+  queue-manager: ${QUEUE_MANAGER}
+  queue-in: ${QUEUE_IN}
+  queue-out: ${QUEUE_OUT}
+  channel: ${CHANNEL:SYSTEM.DEF.SVRCONN}
+  hostname: ${MQ_HOSTNAME:localhost}
+  port: ${MQ_PORT:1414}

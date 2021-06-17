@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "errors.field-error-file",
+      "type": "java.lang.String",
+      "description": "Description for errors.field-error-file."
+  }
+] }
