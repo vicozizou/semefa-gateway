@@ -27,16 +27,16 @@ class MqClient(val mqClientConfig: MqClientConfig) {
                 put(CMQC.HOST_NAME_PROPERTY, hostname)
                 put(CMQC.APPNAME_PROPERTY, "Aplicacion Afiliacion Online JAVA, SEMEFA-SUSALUD V1.0")
                 put(CMQC.TRANSPORT_PROPERTY, CMQC.TRANSPORT_MQSERIES_CLIENT)
-                logger.info("""
+                /*logger.info("""
                     Loaded MQ properties:
                     =====================
-                    queueManagerName: $queueManagerName
-                    queueNameIn: $queueNameIn
-                    queueNameOut: $queueNameOut
+                    queueManagerName: $queueManager
+                    queueNameIn: $queueIn
+                    queueNameOut: $queueOut
                     hostname: $hostname 
                     port: $port
                     channel: $channel
-                """.trimIndent())
+                """.trimIndent())*/
             }
         }
     private val messageOptions = MQGetMessageOptions()
@@ -57,9 +57,9 @@ class MqClient(val mqClientConfig: MqClientConfig) {
 
         try {
             with(mqClientConfig) {
-                logger.info("Connecting to queue manager: $queueManagerName")
-                queueManager = MQQueueManager(queueManagerName, connectionProps)
-                logger.info("Connected to: $queueManagerName")
+                logger.info("Connecting to queue manager: ${this.queueManager}")
+                queueManager = MQQueueManager(this.queueManager, connectionProps)
+                logger.info("Connected to: ${this.queueManager}")
             }
 
             queueIn = accessQueue(queueManager, true)
@@ -80,7 +80,7 @@ class MqClient(val mqClientConfig: MqClientConfig) {
 
     private fun accessQueue(queueManager: MQQueueManager?, isIn: Boolean): MQQueue? =
         with(mqClientConfig) {
-            val name = if (isIn) queueNameIn else queueNameOut
+            val name = if (isIn) queueIn else queueOut
             logger.info("Accessing queue $name.. ")
             val queue = queueManager?.accessQueue(
                 name,

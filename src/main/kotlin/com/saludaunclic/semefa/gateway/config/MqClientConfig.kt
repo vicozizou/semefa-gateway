@@ -13,7 +13,7 @@ class MqClientConfig {
     lateinit var hostname: String
     var port: Int = DEFAULT_PORT
     lateinit var channel: String
-    lateinit var queueManagerName: String
-    lateinit var queueNameIn: String
-    lateinit var queueNameOut: String
+    lateinit var queueManager: String
+    lateinit var queueIn: String
+    lateinit var queueOut: String
 }
