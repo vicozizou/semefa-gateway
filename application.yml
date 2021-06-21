@@ -15,9 +15,16 @@ errors:
   field-error-file: ${FIELD_ERROR_FILE:classpath:error-campo.csv}
   description-error-file: ${DESCRIPTION_ERROR_FILE:classpath:error-descripcion.csv}
 mq:
-  queue-manager: ${QUEUE_MANAGER}
-  queue-in: ${QUEUE_IN}
-  queue-out: ${QUEUE_OUT}
-  channel: ${CHANNEL:SYSTEM.DEF.SVRCONN}
+  queue-manager: ${MQ_QUEUE_MANAGER}
+  queue-in: ${MQ_QUEUE_IN}
+  queue-out: ${MQ_QUEUE_OUT}
+  channel: ${MQ_CHANNEL:SYSTEM.DEF.SVRCONN}
   hostname: ${MQ_HOSTNAME:localhost}
   port: ${MQ_PORT:1414}
+date:
+  time-zone: ${TIME_ZONE:UTC}
+jwt:
+  issuer: saludaunclic
+  expiration-sec: ${JWT_EXPIRATION_SEC:86400}
+  clock-skew-sec: ${JWT_CLOCK_SKEW_SEC:300}
+  secret: ${JWT_SECRET:changeme}

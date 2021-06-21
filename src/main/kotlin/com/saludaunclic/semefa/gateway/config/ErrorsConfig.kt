@@ -1,11 +1,10 @@
 package com.saludaunclic.semefa.gateway.config
 
-import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-@ConfigurationProperties(prefix = "errors")
-class ErrorsConfig {
-    lateinit var fieldErrorFile: String
-    lateinit var descriptionErrorFile: String
+class ErrorsConfig(@Value("\${errors.field-error-file}") val fieldErrorFile: String,
+                   @Value("\${errors.description-error-file}")val descriptionErrorFile: String) {
+
 }
