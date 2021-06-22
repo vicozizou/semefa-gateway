@@ -1,4 +1,4 @@
-package com.saludaunclic.semefa.gateway.model
+package com.saludaunclic.semefa.gateway
 
 
 class GatewayConstants {

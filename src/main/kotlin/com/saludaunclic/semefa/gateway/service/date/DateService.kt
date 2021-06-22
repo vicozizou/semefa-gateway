@@ -1,4 +1,4 @@
-package com.saludaunclic.semefa.gateway.date
+package com.saludaunclic.semefa.gateway.service.date
 
 import java.time.LocalDateTime
 import java.util.Date

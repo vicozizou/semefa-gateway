@@ -1,7 +1,7 @@
-package com.saludaunclic.semefa.gateway.security
+package com.saludaunclic.semefa.gateway.service.token
 
 import com.saludaunclic.semefa.gateway.config.TokenConfig
-import com.saludaunclic.semefa.gateway.date.DateService
+import com.saludaunclic.semefa.gateway.service.date.DateService
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Clock
 import io.jsonwebtoken.Jwts
@@ -15,8 +15,10 @@ class JWTTokenService(
     val dates: DateService,
     val tokenConfig: TokenConfig
 ): Clock, TokenService {
-    val dot = '.'
-    val compressionCodec: GzipCompressionCodec = GzipCompressionCodec()
+    companion object {
+        const val dot = '.'
+        val compressionCodec: GzipCompressionCodec = GzipCompressionCodec()
+    }
 
     override fun now(): Date = dates.toDate(dates.now())
 

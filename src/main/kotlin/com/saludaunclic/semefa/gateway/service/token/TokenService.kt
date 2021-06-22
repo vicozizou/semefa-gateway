@@ -1,4 +1,4 @@
-package com.saludaunclic.semefa.gateway.security
+package com.saludaunclic.semefa.gateway.service.token
 
 interface TokenService {
     fun permanent(attributes: Map<String, String>): String

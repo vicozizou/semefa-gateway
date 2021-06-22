@@ -1,6 +1,6 @@
 package com.saludaunclic.semefa.gateway.component
 
-import com.saludaunclic.semefa.gateway.model.GatewayConstants
+import com.saludaunclic.semefa.gateway.GatewayConstants
 import com.saludaunclic.semefa.gateway.model.DataFrame271
 import com.saludaunclic.semefa.gateway.model.DataFrame997
 import org.slf4j.Logger

@@ -6,7 +6,7 @@ import com.ibm.mq.MQQueue
 import com.ibm.mq.MQQueueManager
 import com.ibm.mq.constants.CMQC
 import com.saludaunclic.semefa.gateway.config.MqClientConfig
-import com.saludaunclic.semefa.gateway.model.GatewayConstants
+import com.saludaunclic.semefa.gateway.GatewayConstants
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.codec.Hex
