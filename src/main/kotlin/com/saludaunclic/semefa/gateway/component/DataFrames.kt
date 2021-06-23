@@ -2,8 +2,6 @@ package com.saludaunclic.semefa.gateway.component
 
 import com.saludaunclic.semefa.gateway.model.DataFrame271
 import com.saludaunclic.semefa.gateway.model.DataFrame997
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import pe.gob.susalud.jr.transaccion.susalud.bean.In271RegafiUpdate
 import pe.gob.susalud.jr.transaccion.susalud.bean.In271RegafiUpdateAfiliacion
@@ -13,8 +11,6 @@ import pe.gob.susalud.jr.transaccion.susalud.bean.In997RegafiUpdateExcepcion
 
 @Component
 class DataFrames(val errors: Errors) {
-    val logger: Logger = LoggerFactory.getLogger(DataFrameProcessor::class.java)
-
     fun fromIn271(in271: In271RegafiUpdate): DataFrame271 =
         with(in271) {
             DataFrame271(

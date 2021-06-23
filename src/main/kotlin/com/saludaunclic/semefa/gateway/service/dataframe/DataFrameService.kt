@@ -1,6 +1,8 @@
-package com.saludaunclic.semefa.gateway.component
+package com.saludaunclic.semefa.gateway.service.dataframe
 
 import com.saludaunclic.semefa.gateway.GatewayConstants
+import com.saludaunclic.semefa.gateway.component.DataFrames
+import com.saludaunclic.semefa.gateway.component.MqClient
 import com.saludaunclic.semefa.gateway.model.DataFrame271
 import com.saludaunclic.semefa.gateway.model.DataFrame997
 import org.slf4j.Logger
@@ -10,13 +12,13 @@ import pe.gob.susalud.jr.transaccion.susalud.service.RegafiUpdate271Service
 import pe.gob.susalud.jr.transaccion.susalud.service.RegafiUpdate997Service
 
 @Service
-class DataFrameProcessor(
+class DataFrameService(
     val regafiUpdate271Service: RegafiUpdate271Service,
     val regafiUpdate997Service: RegafiUpdate997Service,
     val dataFrames: DataFrames,
     val mqClient: MqClient,
 ) {
-    private val logger: Logger = LoggerFactory.getLogger(DataFrameProcessor::class.java)
+    private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
     fun process271DataFrame(x12Text: String): DataFrame271 =
         dataFrames.fromIn271(
@@ -35,7 +37,8 @@ class DataFrameProcessor(
                 extractX12(
                     response[GatewayConstants.MESSAGE_KEY] ?: "",
                     GatewayConstants.TAG_997
-                )).apply { isFlag = true },
+                )
+            ).apply { isFlag = true },
             response[GatewayConstants.MESSAGE_KEY] ?: "",
             response[GatewayConstants.MESSAGE_ID_KEY] ?: ""
         )
@@ -45,8 +48,9 @@ class DataFrameProcessor(
         logger.info("Extracting x12 from $xmlText with tag $tag")
         val x12Split: List<String> = xmlText.split(tag)
         val second = x12Split[1]
-        val x12 = second.substring(1, second.length - 2)
-        logger.debug("X12 extracted: $x12")
-        return x12
+        return with(second.substring(1, second.length - 2)) {
+            logger.debug("X12 extracted: $this")
+            this
+        }
     }
 }

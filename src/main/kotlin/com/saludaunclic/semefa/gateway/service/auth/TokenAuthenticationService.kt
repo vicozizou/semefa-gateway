@@ -1,7 +1,7 @@
-package com.saludaunclic.semefa.gateway.service.token
+package com.saludaunclic.semefa.gateway.service.auth
 
 import com.saludaunclic.semefa.gateway.model.User
-import com.saludaunclic.semefa.gateway.service.auth.UserAuthenticationService
+import com.saludaunclic.semefa.gateway.service.token.TokenService
 import com.saludaunclic.semefa.gateway.service.user.UserService
 import org.springframework.stereotype.Service
 import java.util.Optional

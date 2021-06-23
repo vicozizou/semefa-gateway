@@ -13,6 +13,7 @@ plugins {
 //  id 'no.nils.wsdl2java' version '0.12'
 }
 
+
 group = 'com.saludaunclic.semefa'
 version = '1.0'
 sourceCompatibility = JavaVersion.VERSION_11
@@ -24,9 +25,9 @@ repositories {
 dependencies {
   annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
   // https://mvnrepository.com/artifact/javax.el/javax.el-api
-  implementation'javax.el:javax.el-api:3.0.1-b06'
-  implementation 'org.hibernate.validator:hibernate-validator:7.0.1.Final'
   compileOnly 'org.springframework.boot:spring-boot-configuration-processor'
+  implementation 'javax.el:javax.el-api:3.0.1-b06'
+  implementation 'org.hibernate.validator:hibernate-validator:7.0.1.Final'
   implementation 'org.springframework.boot:spring-boot-starter-actuator'
 //  implementation 'org.springframework.boot:spring-boot-starter-amqp'
 //  implementation 'org.springframework.boot:spring-boot-starter-artemis'
@@ -45,6 +46,7 @@ dependencies {
   implementation files('libs/com.ibm.mq.jar')
   implementation files('libs/connector.jar')
   implementation files('libs/jr-afiliacion-susalud-1.0.0.jar')
+  runtimeOnly 'org.jetbrains.kotlin:kotlin-reflect:1.5.20'
   runtimeOnly 'mysql:mysql-connector-java'
   testImplementation 'org.springframework.boot:spring-boot-starter-test'
 //  testImplementation 'org.springframework.amqp:spring-rabbit-test'

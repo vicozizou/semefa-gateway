@@ -8,5 +8,11 @@ class GatewayConstants {
         const val SEPARATOR = "\\|"
         const val MESSAGE_ID_KEY = "MsgId"
         const val MESSAGE_KEY = "Msg"
+        const val SUPER_ROLE = "SUPER"
     }
+}
+
+object Messages {
+    const val USERNAME_SIZE_VALIDATION: String = "Usuario debe tener al menos 8 y como máximo 16 caracteres"
+    const val PASSWORD_SIZE_VALIDATION: String = "Contraseña debe tener al menos 12 y como máximo 32 caracteres"
 }

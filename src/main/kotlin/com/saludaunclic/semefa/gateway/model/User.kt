@@ -1,23 +1,40 @@
 package com.saludaunclic.semefa.gateway.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.saludaunclic.semefa.gateway.Messages
 import org.springframework.data.annotation.Id
+import org.springframework.data.relational.core.mapping.Column
+import org.springframework.data.relational.core.mapping.MappedCollection
+import org.springframework.data.relational.core.mapping.Table
 import org.springframework.security.core.userdetails.UserDetails
 import javax.validation.constraints.Size
 
-class User(@Id val id: String,
-           @Size(min = 8, max = 16, message = "Usuario debe tener al menos 8 y como máximo 16 caracteres")
-           private val username: String,
-           @Size(min = 12, max = 32, message = "Contraseña debe tener al menos 12 y como máximo 32 caracteres")
-           private val password: String,
-           val encrypted: Boolean = true,
-           val status: UserStatus = UserStatus.DISABLED,
-           val roles: List<Role> = listOf()): UserDetails {
+@Table("app_user")
+data class User(
+    @Id var id: Int? = null,
+    @Column
+    @Size(min = 8, max = 16, message = Messages.USERNAME_SIZE_VALIDATION)
+    private var username: String,
+    @Column
+    @Size(min = 12, max = 32, message = Messages.PASSWORD_SIZE_VALIDATION)
+    private var password: String,
+    @Column var encrypted: Boolean = true,
+    @Column var status: UserStatus = UserStatus.DISABLED,
+    @MappedCollection(idColumn = "user_id") var roles: Set<RoleRef> = setOf()
+): UserDetails {
     override fun getUsername(): String = username
+
+    fun setUsername(username: String) {
+        this.username = username
+    }
 
     @JsonIgnore override fun getPassword(): String = password
 
-    @JsonIgnore override fun getAuthorities(): List<Role> = roles
+    fun setPassword(password: String) {
+        this.password = password
+    }
+
+    override fun getAuthorities(): Set<RoleRef> = roles
 
     @JsonIgnore override fun isAccountNonExpired(): Boolean = status != UserStatus.EXPIRED
 
@@ -25,5 +42,22 @@ class User(@Id val id: String,
 
     @JsonIgnore override fun isCredentialsNonExpired(): Boolean = isAccountNonExpired
 
-    override fun isEnabled(): Boolean = status == UserStatus.ENABLED
+    @JsonIgnore override fun isEnabled(): Boolean = status == UserStatus.ENABLED
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as User
+
+        if (id != other.id) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return id ?: 0
+    }
+
+    override fun toString(): String =
+        "User(id=$id, username='$username', encrypted=$encrypted, status=$status, roles=$roles)"
 }

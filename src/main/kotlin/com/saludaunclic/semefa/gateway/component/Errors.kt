@@ -1,7 +1,7 @@
 package com.saludaunclic.semefa.gateway.component
 
-import com.saludaunclic.semefa.gateway.config.ErrorsConfig
 import com.saludaunclic.semefa.gateway.GatewayConstants
+import com.saludaunclic.semefa.gateway.config.ErrorsConfig
 import org.springframework.stereotype.Component
 import java.nio.file.Path
 

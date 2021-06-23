@@ -5,8 +5,8 @@ import com.ibm.mq.MQMessage
 import com.ibm.mq.MQQueue
 import com.ibm.mq.MQQueueManager
 import com.ibm.mq.constants.CMQC
-import com.saludaunclic.semefa.gateway.config.MqClientConfig
 import com.saludaunclic.semefa.gateway.GatewayConstants
+import com.saludaunclic.semefa.gateway.config.MqClientConfig
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.codec.Hex
@@ -19,6 +19,8 @@ class MqClient(val mqClientConfig: MqClientConfig) {
         const val NUMBER_OF_GET_TRIES = 2
     }
 
+    private val logger: Logger = LoggerFactory.getLogger(javaClass)
+
     private val connectionProps = Hashtable<String, Any>()
         .apply {
             with(mqClientConfig) {
@@ -27,7 +29,8 @@ class MqClient(val mqClientConfig: MqClientConfig) {
                 put(CMQC.HOST_NAME_PROPERTY, hostname)
                 put(CMQC.APPNAME_PROPERTY, "Aplicacion Afiliacion Online JAVA, SEMEFA-SUSALUD V1.0")
                 put(CMQC.TRANSPORT_PROPERTY, CMQC.TRANSPORT_MQSERIES_CLIENT)
-                /*logger.info("""
+                logger.info("""
+
                     Loaded MQ properties:
                     =====================
                     queueManagerName: $queueManager
@@ -36,7 +39,7 @@ class MqClient(val mqClientConfig: MqClientConfig) {
                     hostname: $hostname 
                     port: $port
                     channel: $channel
-                """.trimIndent())*/
+                """.trimIndent())
             }
         }
     private val messageOptions = MQGetMessageOptions()
@@ -45,7 +48,6 @@ class MqClient(val mqClientConfig: MqClientConfig) {
             options = CMQC.MQGMO_WAIT
             waitInterval = 1000
         }
-    private val logger: Logger = LoggerFactory.getLogger(MqClient::class.java)
 
     fun sendMessageSync(message: String): Map<String, String> {
         val response = mutableMapOf<String, String>()
@@ -139,22 +141,24 @@ class MqClient(val mqClientConfig: MqClientConfig) {
         queueManager?.disconnect()
     }
 
-    private fun createPutMessage(message: String): MQMessage = MQMessage()
-        .apply {
-            logger.info("Creating PUT message")
-            characterSet = 819
-            encoding = 273
-            format = CMQC.MQFMT_STRING
-            writeString(message)
-            logger.info("Message: [ $message ]")
-        }
+    private fun createPutMessage(message: String): MQMessage =
+        MQMessage()
+            .apply {
+                logger.info("Creating PUT message")
+                characterSet = 819
+                encoding = 273
+                format = CMQC.MQFMT_STRING
+                writeString(message)
+                logger.info("Message: [ $message ]")
+            }
 
-    private fun createGetMessage(message: MQMessage): MQMessage = MQMessage()
-        .apply {
-            logger.info("Creating GET message")
-            characterSet = 819
-            encoding = 273
-            messageId = message.messageId
-            logger.info("Message: [ ${message.messageId} ]")
-        }
+    private fun createGetMessage(message: MQMessage): MQMessage =
+        MQMessage()
+            .apply {
+                logger.info("Creating GET message")
+                characterSet = 819
+                encoding = 273
+                messageId = message.messageId
+                logger.info("Message: [ ${message.messageId} ]")
+            }
 }

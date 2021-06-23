@@ -16,12 +16,12 @@ class TokenAuthenticationProvider(val userAuthenticationService: UserAuthenticat
         authentication: UsernamePasswordAuthenticationToken?
     ) {}
 
-    override fun retrieveUser(username: String?, authentication: UsernamePasswordAuthenticationToken?): UserDetails {
-        val token: String = authentication?.credentials as String
-        return Optional
-            .ofNullable(token)
-            .map { it as String }
-            .flatMap { userAuthenticationService.findByToken(it) }
-            .orElseThrow { UsernameNotFoundException("Cannot find user with authentication token=$token") }
-    }
+    override fun retrieveUser(username: String?, authentication: UsernamePasswordAuthenticationToken?): UserDetails =
+        with(authentication?.credentials as String) {
+            Optional
+                .ofNullable(this)
+                .flatMap { userAuthenticationService.findByToken(it) }
+                .orElseThrow { UsernameNotFoundException("Cannot find user with authentication token=$this") }
+        }
 }
+
