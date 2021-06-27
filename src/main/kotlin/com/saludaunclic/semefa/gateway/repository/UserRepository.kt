@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository
 import java.util.Optional
 
 @Repository
-interface UserRepository: CrudRepository<User, String> {
+interface UserRepository: CrudRepository<User, Int> {
     fun findByUsername(username: String): Optional<User>
 }

@@ -10,5 +10,6 @@ import pe.gob.susalud.jr.transaccion.susalud.service.imp.RegafiUpdate997ServiceI
 @Configuration
 class GatewayConfig {
     @Bean fun regafiUpdate271Service(): RegafiUpdate271Service = RegafiUpdate271ServiceImpl()
+
     @Bean fun regafiUpdate997Service(): RegafiUpdate997Service = RegafiUpdate997ServiceImpl()
 }

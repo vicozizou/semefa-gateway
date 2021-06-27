@@ -1,7 +1,5 @@
 FROM alpine:3.13
 
-ARG BUILD_ID=HEAD
-
 WORKDIR /app
 
 RUN apk --no-cache update && apk upgrade \
@@ -10,15 +8,20 @@ RUN apk --no-cache update && apk upgrade \
     && update-ca-certificates
 #RUN apk add libsass --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/
 
-
-
-COPY build-src/ /build/
-RUN chmod 500 /build/build_semefa.sh && /build/build_semefa.sh ${BUILD_ID}
-
 COPY build.gradle settings.gradle gradlew /app/
 COPY gradle /app/gradle
 
-RUN mkdir -p /app/src/
+RUN ./gradlew build -x bootJar --no-daemon
+RUN rm -rf /app/src
+RUN rm -rf /app/libs
+RUN ./gradlew clean --no-daemon
+COPY src /app/src
+COPY libs /app/libs
+RUN ./gradlew bootJar --no-daemon --build-cache
+RUN cp /app/build/libs/semefa-gateway-1.0.jar .
+COPY application.yml .
 
-RUN mkdir -p /app/src/test/java
+EXPOSE 9000 9001
 
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["semefa-gateway-1.0.jar", "--spring.config.location=file:./application.yml"]

@@ -30,7 +30,10 @@ import javax.servlet.Filter
 class SecurityConfig(val provider: TokenAuthenticationProvider): WebSecurityConfigurerAdapter() {
     companion object {
         private const val PUBLIC_API_PATTERN: String = "/api/public/**"
-        val PUBLIC_URLS: RequestMatcher = OrRequestMatcher(AntPathRequestMatcher(PUBLIC_API_PATTERN))
+        private const val ACTUATOR_PATTERN: String = "/actuator/**"
+        val PUBLIC_URLS: RequestMatcher = OrRequestMatcher(
+            AntPathRequestMatcher(PUBLIC_API_PATTERN),
+            AntPathRequestMatcher(ACTUATOR_PATTERN))
         val PROTECTED_URLS: RequestMatcher = NegatedRequestMatcher(AntPathRequestMatcher(PUBLIC_API_PATTERN))
     }
 

@@ -1,10 +1,22 @@
 server:
-  port: ${SERVER_PORT:8080}
+  port: ${SERVER_PORT:9000}
+management:
+  server:
+    port: ${ACTUATOR_PORT:9001}
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  endpoints:
+    web:
+      base-path: ${ACTUATOR_CONTEXT_PATH:/actuator}
+      exposure:
+        include: info,health,prometheus
 spring:
   application:
-    name: gateway-service
+    name: semefa-gateway
   datasource:
-    driverClassName: com.mysql.jdbc.Driver
+    driverClassName: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:semefa}
     username: ${DB_USER:semefa}
     password: ${DB_PASSWORD:semefa}
