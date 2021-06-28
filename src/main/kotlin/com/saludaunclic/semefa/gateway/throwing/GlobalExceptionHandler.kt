@@ -8,10 +8,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
 @ControllerAdvice
-class RestResponseEntityExceptionHandler: ResponseEntityExceptionHandler() {
+class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
     companion object {
         const val UNKNOWN_ERROR_MESSAGE: String = "Unknown server error occurred"
     }
+
     @ExceptionHandler(ServiceException::class)
     fun handleServiceException(exception: ServiceException): ResponseEntity<RestMessage> =
         with(exception) {
