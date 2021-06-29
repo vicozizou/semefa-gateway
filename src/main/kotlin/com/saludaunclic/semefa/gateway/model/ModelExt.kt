@@ -1,9 +1,7 @@
-package com.saludaunclic.semefa.gateway.ext
+package com.saludaunclic.semefa.gateway.model
 
 import com.saludaunclic.semefa.gateway.dto.RoleDto
 import com.saludaunclic.semefa.gateway.dto.UserDto
-import com.saludaunclic.semefa.gateway.model.Role
-import com.saludaunclic.semefa.gateway.model.User
 
 fun toModel(role: RoleDto): Role = Role(name = role.name)
 
