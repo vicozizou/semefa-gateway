@@ -11,8 +11,8 @@ import pe.gob.susalud.jr.transaccion.susalud.bean.In997RegafiUpdateExcepcion
 
 @Component
 class DataFrames(val errors: Errors) {
-    fun fromIn271(in271: In271RegafiUpdate): DataFrame271 =
-        with(in271) {
+    fun fromIn271(in271RegafiUpdate: In271RegafiUpdate): DataFrame271 =
+        with(in271RegafiUpdate) {
             DataFrame271(
                 tiOperacion,
                 caRemitente,
@@ -30,8 +30,8 @@ class DataFrames(val errors: Errors) {
             )
         }
 
-    fun fromIn997(in997: In997RegafiUpdate, xmlDataFrame: String, messageId: String): DataFrame997 =
-        with(in997) {
+    fun fromIn997(in997RegafiUpdate: In997RegafiUpdate, xmlDataFrame: String, messageId: String): DataFrame997 =
+        with(in997RegafiUpdate) {
             DataFrame997(
                 feTransaccion,
                 hoTransaccion,

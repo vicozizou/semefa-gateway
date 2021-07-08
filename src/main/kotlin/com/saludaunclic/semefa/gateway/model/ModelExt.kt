@@ -3,9 +3,9 @@ package com.saludaunclic.semefa.gateway.model
 import com.saludaunclic.semefa.gateway.dto.RoleDto
 import com.saludaunclic.semefa.gateway.dto.UserDto
 
-fun toModel(role: RoleDto): Role = Role(name = role.name)
+fun toModel(role: RoleDto): Role = Role(role.id, role.name)
 
-fun fromModel(role: Role): RoleDto = RoleDto(role.name)
+fun fromModel(role: Role): RoleDto = RoleDto(role.id, role.name)
 
 fun toModel(user: UserDto): User =
     with(user) {

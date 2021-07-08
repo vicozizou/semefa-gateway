@@ -9,6 +9,7 @@ import javax.validation.constraints.Size
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class RoleDto(
+    var id: Int? = null,
     @Size(min = 4, max = 16, message = "Role debe tener al menos 4 y como máximo 16 caracteres")
     @JsonProperty("name")
     var name: String

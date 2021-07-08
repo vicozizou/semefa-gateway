@@ -2,9 +2,10 @@ package com.saludaunclic.semefa.gateway.service.setup
 
 import com.saludaunclic.semefa.gateway.GatewayConstants
 import com.saludaunclic.semefa.gateway.dto.AppSetupDto
-import com.saludaunclic.semefa.gateway.ext.toModel
+import com.saludaunclic.semefa.gateway.dto.RoleDto
 import com.saludaunclic.semefa.gateway.model.Role
 import com.saludaunclic.semefa.gateway.model.UserStatus
+import com.saludaunclic.semefa.gateway.model.toModel
 import com.saludaunclic.semefa.gateway.service.user.UserService
 import com.saludaunclic.semefa.gateway.throwing.ServiceException
 import org.slf4j.Logger
@@ -22,11 +23,14 @@ class AppSetupService(val userService: UserService) {
             throw ServiceException("Aplicación ya tiene usuario inicial definido", HttpStatus.BAD_REQUEST)
         }
 
-        logger.info("Attempting to setup application with user: $appSetup")
-        val user = userService.save(toModel(appSetup.user).apply {
-            roles = setOf(Role(name = GatewayConstants.SUPER_ROLE))
+        appSetup.user.apply {
+            roles.clear()
+            roles.add(RoleDto(name = GatewayConstants.SUPER_ROLE))
             status = UserStatus.ENABLED
-        })
+        }
+
+        logger.info("Attempting to setup application with user: $appSetup")
+        val user = userService.save(toModel(appSetup.user))
 
         return """Aplicación fue inicializada con:
             $user

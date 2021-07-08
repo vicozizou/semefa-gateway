@@ -8,7 +8,7 @@ import java.io.Serializable
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class AfiliadoDto(
-    @JsonProperty("user") var apPaternoAfiliado: String? = null,
+    @JsonProperty("apPaternoAfiliado") var apPaternoAfiliado: String? = null,
     @JsonProperty("noAfiliado1") var noAfiliado1: String? = null,
     @JsonProperty("noAfiliado2") var noAfiliado2: String? = null,
     @JsonProperty("apMaternoAfiliado") var apMaternoAfiliado: String? = null,

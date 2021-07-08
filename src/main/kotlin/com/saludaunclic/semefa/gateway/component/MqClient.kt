@@ -12,11 +12,14 @@ import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.codec.Hex
 import org.springframework.stereotype.Component
 import java.util.Hashtable
+import java.util.concurrent.TimeUnit
 
 @Component
 class MqClient(val mqClientConfig: MqClientConfig) {
     companion object {
         const val NUMBER_OF_GET_TRIES = 2
+        const val CHARACTER_SET = 819
+        const val ENCODING = 273
     }
 
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
@@ -100,6 +103,7 @@ class MqClient(val mqClientConfig: MqClientConfig) {
                 logger.info("Attempt #$i to fetch response message has failed")
                 if (i < NUMBER_OF_GET_TRIES) {
                     logger.info("Giving another try")
+                    TimeUnit.SECONDS.sleep(1)
                 }
             }
         }
@@ -145,8 +149,8 @@ class MqClient(val mqClientConfig: MqClientConfig) {
         MQMessage()
             .apply {
                 logger.info("Creating PUT message")
-                characterSet = 819
-                encoding = 273
+                characterSet = CHARACTER_SET
+                encoding = ENCODING
                 format = CMQC.MQFMT_STRING
                 writeString(message)
                 logger.info("Message: [ $message ]")
@@ -156,8 +160,8 @@ class MqClient(val mqClientConfig: MqClientConfig) {
         MQMessage()
             .apply {
                 logger.info("Creating GET message")
-                characterSet = 819
-                encoding = 273
+                characterSet = CHARACTER_SET
+                encoding = ENCODING
                 messageId = message.messageId
                 logger.info("Message: [ ${message.messageId} ]")
             }
