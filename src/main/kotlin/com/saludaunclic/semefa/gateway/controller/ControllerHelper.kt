@@ -9,6 +9,7 @@ class ControllerHelper {
     companion object {
         val LOCAL_LOOPBACK_OPTIONS: Set<String> = setOf("localhost", "127.0.0.1", "0:0:0:0:0:0:0:1")
 
+        @Throws(ServiceException::class)
         fun <E> whenFromLocalhost(request: HttpServletRequest, supplier: () -> ResponseEntity<E>): ResponseEntity<E> =
             if (LOCAL_LOOPBACK_OPTIONS.contains(request.remoteAddr)) supplier()
             else throw ServiceException(

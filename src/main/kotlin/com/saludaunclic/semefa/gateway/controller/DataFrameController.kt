@@ -12,7 +12,7 @@ import pe.gob.susalud.jr.transaccion.susalud.bean.In997RegafiUpdate
 
 @RestController
 @RequestMapping("/api/regafi")
-class RegafiController(val dataFrameService: DataFrameService) {
+class DataFrameController(val dataFrameService: DataFrameService) {
     @RequestMapping("/update271")
     @PostMapping(consumes = [ MediaType.APPLICATION_JSON_VALUE ], produces = [ MediaType.APPLICATION_JSON_VALUE ])
     fun update271(@RequestBody in271RegafiUpdate: In271RegafiUpdate): ResponseEntity<In997RegafiUpdate> =

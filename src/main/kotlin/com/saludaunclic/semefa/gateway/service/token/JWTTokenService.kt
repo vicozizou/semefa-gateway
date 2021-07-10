@@ -12,8 +12,8 @@ import java.util.Date
 
 @Service
 class JWTTokenService(
-    val dates: DateService,
-    val tokenConfig: TokenConfig
+    private val dates: DateService,
+    private val tokenConfig: TokenConfig
 ): Clock, TokenService {
     companion object {
         const val dot = '.'

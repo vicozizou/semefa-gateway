@@ -7,8 +7,8 @@ import org.springframework.security.core.GrantedAuthority
 
 @Table("app_role")
 data class Role(
-    @Id val id: Int? = null,
-    @Column val name: String
+    @Id var id: Int? = null,
+    @Column var name: String
 ): GrantedAuthority {
     override fun getAuthority(): String = name
 

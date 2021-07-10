@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service
 import java.util.Optional
 
 @Service
-class TokenAuthenticationService(val tokenService: TokenService,
-                                 val userService: UserService): UserAuthenticationService {
+class TokenAuthenticationService(
+    private val tokenService: TokenService,
+    private val userService: UserService
+): UserAuthenticationService {
     override fun login(username: String, password: String): Optional<String> =
         with(userService) {
             findByUsername(username)

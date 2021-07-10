@@ -24,4 +24,3 @@ class TokenAuthenticationProvider(val userAuthenticationService: UserAuthenticat
                 .orElseThrow { UsernameNotFoundException("Cannot find user with authentication token=$this") }
         }
 }
-

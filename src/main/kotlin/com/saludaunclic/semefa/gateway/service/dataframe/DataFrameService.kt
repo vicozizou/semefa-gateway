@@ -30,9 +30,9 @@ class DataFrameService(
                 logger.debug("Sending X12 message with this data: $this")
             }
 
-            val response: Map<String, String> = mqClient.sendMessageSync(this)
-            logger.info("=== End MQ Connection ===")
-            response
+            mqClient
+                .sendMessageSync(this)
+                .also { logger.info("=== End MQ Connection ===") }
         }
 
     private fun processRequest(in271RegafiUpdate: In271RegafiUpdate): String =
@@ -40,11 +40,12 @@ class DataFrameService(
             if (logger.isDebugEnabled) {
                 logger.debug("From bean to X12, bean: \n${objectMapper.writeValueAsString(this)}")
             }
-            val x12: String = extractX12(regafiUpdate271Service.beanToX12N(this), GatewayConstants.TAG_271)
-            if (logger.isDebugEnabled) {
-                logger.debug("From bean to X12, X12: \n${x12}")
-            }
-            x12
+            extractX12(regafiUpdate271Service.beanToX12N(this), GatewayConstants.TAG_271)
+                .also {
+                    if (logger.isDebugEnabled) {
+                        logger.debug("From bean to X12, X12: \n$it")
+                    }
+                }
         }
 
     private fun processResponse(response: Map<String, String>): In997RegafiUpdate =
@@ -54,22 +55,21 @@ class DataFrameService(
                 logger.debug("From X12 to bean, X12: \n$x12")
             }
 
-            val in997RegafiUpdate: In997RegafiUpdate = regafiUpdate997Service
+            regafiUpdate997Service
                 .x12NToBean(x12)
                 .apply { isFlag = true }
-
-            if (logger.isDebugEnabled) {
-                logger.debug("From X12 to bean, bean: \n${objectMapper.writeValueAsString(in997RegafiUpdate)}")
-            }
-            in997RegafiUpdate
+                .also {
+                    if (logger.isDebugEnabled) {
+                        logger.debug("From X12 to bean, bean: \n${objectMapper.writeValueAsString(it)}")
+                    }
+                }
         }
 
     private fun extractX12(xmlText: String, tag: String): String {
-        logger.info("Extracting x12 from $xmlText with tag $tag")
-        val x12Split: List<String> = xmlText.split(tag)
-        val second = x12Split[1]
-        val result = second.substring(1, second.length - 2)
-        logger.debug("X12 extracted: $this")
-        return result
+        logger.info("Extracting X12 from $xmlText with tag $tag")
+        val second = xmlText.split(tag)[1]
+        return second
+            .substring(1, second.length - 2)
+            .also { logger.debug("X12 extracted: $this") }
     }
 }

@@ -13,14 +13,13 @@ import kotlin.jvm.Throws
 
 @Service
 class DefaultUserService(
-    val userRepository: UserRepository,
-    val passwordEncoder: BCryptPasswordEncoder
+    private val userRepository: UserRepository,
+    private val passwordEncoder: BCryptPasswordEncoder
 ): UserService {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
     @Throws(ServiceException::class)
-    override fun save(user: User): User =
-        if (user.id != null) update(normalize(user)) else create(normalize(user))
+    override fun save(user: User): User = _save(normalize(user))
 
     override fun find(id: Int): Optional<User> = userRepository.findById(id)
 
@@ -30,6 +29,8 @@ class DefaultUserService(
 
     override fun passwordMatches(provided: String, current: String): Boolean =
         passwordEncoder.matches(provided, current)
+
+    private fun _save(user: User): User = if (user.id != null) update(user) else create(user)
 
     @Throws(ServiceException::class)
     fun create(user: User): User {

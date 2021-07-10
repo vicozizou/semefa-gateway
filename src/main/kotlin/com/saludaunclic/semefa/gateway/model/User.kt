@@ -1,6 +1,5 @@
 package com.saludaunclic.semefa.gateway.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.MappedCollection
@@ -9,26 +8,34 @@ import org.springframework.security.core.userdetails.UserDetails
 
 @Table("app_user")
 data class User(
-    @Id val id: Int? = null,
-    @Column private val username: String,
-    @Column private val password: String,
-    @Column val encrypted: Boolean = true,
-    @Column val status: UserStatus = UserStatus.DISABLED,
-    @MappedCollection(keyColumn = "user_id", idColumn = "user_id") val roles: MutableSet<Role> = mutableSetOf()
+    @Id var id: Int? = null,
+    @Column private var username: String,
+    @Column private var password: String,
+    @Column var encrypted: Boolean = true,
+    @Column var status: UserStatus = UserStatus.DISABLED,
+    @MappedCollection(keyColumn = "user_id", idColumn = "user_id") var roles: Set<Role> = setOf()
 ): UserDetails {
     override fun getUsername(): String = username
 
-    @JsonIgnore override fun getPassword(): String = password
+    fun setUsername(username: String) {
+        this.username = username
+    }
+
+    override fun getPassword(): String = password
+
+    fun setPassword(password: String) {
+        this.password = password
+    }
 
     override fun getAuthorities(): Set<Role> = roles
 
-    @JsonIgnore override fun isAccountNonExpired(): Boolean = status != UserStatus.EXPIRED
+    override fun isAccountNonExpired(): Boolean = status != UserStatus.EXPIRED
 
-    @JsonIgnore override fun isAccountNonLocked(): Boolean = status != UserStatus.LOCKED
+    override fun isAccountNonLocked(): Boolean = status != UserStatus.LOCKED
 
-    @JsonIgnore override fun isCredentialsNonExpired(): Boolean = isAccountNonExpired
+    override fun isCredentialsNonExpired(): Boolean = isAccountNonExpired
 
-    @JsonIgnore override fun isEnabled(): Boolean = status == UserStatus.ENABLED
+    override fun isEnabled(): Boolean = status == UserStatus.ENABLED
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

@@ -20,7 +20,7 @@ data class UserDto(
     var password: String,
     @JsonProperty("encrypted") var encrypted: Boolean = true,
     @JsonProperty("status") var status: UserStatus = UserStatus.DISABLED,
-    @JsonProperty("roles") var roles: MutableSet<RoleDto> = mutableSetOf()
+    @JsonProperty("roles") var roles: Set<RoleDto> = setOf()
 ): Serializable {
     override fun toString(): String {
         return "UserDto(id=$id, username='$username', status=$status, roles=$roles)"
