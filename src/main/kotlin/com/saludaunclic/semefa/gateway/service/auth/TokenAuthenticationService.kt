@@ -14,7 +14,9 @@ class TokenAuthenticationService(
     override fun login(username: String, password: String): Optional<String> =
         with(userService) {
             findByUsername(username)
-                .filter { passwordMatches(password, it.password) }
+                .filter {
+                    passwordMatches(password, it.password)
+                }
         }.map { tokenService.expiring(mapOf("username" to username)) }
 
     override fun findByToken(token: String): Optional<User> =

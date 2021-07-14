@@ -69,5 +69,5 @@ class JWTTokenService(
     }
 
     private fun parseClaims(toClaims: () -> Claims): Map<String, String> =
-        toClaims().entries.associate { it.key to it.value as String }
+        toClaims().entries.associate { it.key to it.value.toString() }
 }

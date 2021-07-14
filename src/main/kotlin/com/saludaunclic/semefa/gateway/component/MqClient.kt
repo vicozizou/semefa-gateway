@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 @Component
 class MqClient(val mqClientConfig: MqClientConfig) {
     companion object {
-        const val NUMBER_OF_GET_TRIES = 2
+        const val NUMBER_OF_GET_TRIES = 3
         const val CHARACTER_SET = 819
         const val ENCODING = 273
     }
@@ -116,7 +116,7 @@ class MqClient(val mqClientConfig: MqClientConfig) {
         }
 
         logger.info("Ready message fetch")
-        val xmlDataFrame = with(message) { readStringOfByteLength(dataLength) }
+        val xmlDataFrame = message.readStringOfByteLength(message.dataLength)
         logger.info("Message got: $xmlDataFrame")
         val messageId = String(Hex.encode(message.messageId))
         logger.info("Msg Id: $messageId")

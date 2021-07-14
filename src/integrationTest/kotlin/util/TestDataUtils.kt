@@ -1,6 +1,7 @@
-package com.saludaunclic.semefa.util
+package util
 
 import com.saludaunclic.semefa.gateway.dto.AppSetupDto
+import com.saludaunclic.semefa.gateway.dto.TokenDto
 import com.saludaunclic.semefa.gateway.dto.UserDto
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.ResponseEntity
@@ -18,11 +19,11 @@ class TestDataUtils {
 
         fun loginWithCredentials(restTemplate: TestRestTemplate,
                                  username: String,
-                                 password: String): ResponseEntity<String> =
+                                 password: String): ResponseEntity<TokenDto> =
             restTemplate.postForEntity(
                 "/api/public/auth/login?username=$username&password=$password",
                 null,
-                String::class.java)
+                TokenDto::class.java)
 
         fun generateIn271RegafiUpdate(noTransaccion: String = "271_REGAFI_UPDATE",
                                       idRemitente: String = "20001          ",

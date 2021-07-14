@@ -1,8 +1,7 @@
-package com.saludaunclic.semefa
-
 import com.saludaunclic.semefa.gateway.GatewayApplication
+import com.saludaunclic.semefa.gateway.dto.AppSetupDto
 import com.saludaunclic.semefa.gateway.repository.UserRepository
-import com.saludaunclic.semefa.util.TestDataUtils
+import com.saludaunclic.semefa.gateway.service.setup.AppSetupService
 import org.assertj.core.api.AssertionsForInterfaceTypes.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -12,34 +11,37 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.ContextConfiguration
+import util.TestDataUtils
 
 @ContextConfiguration
 @SpringBootTest(classes = [ GatewayApplication::class ], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class AppSetupIntegrationTests(
+class ApiAuthIntegrationTests(
     @Autowired val restTemplate: TestRestTemplate,
+    @Autowired val appSetupService: AppSetupService,
     @Autowired val userRepository: UserRepository
 ) {
+    val appSetup: AppSetupDto = TestDataUtils.generateAppSetup()
+
     @BeforeAll
     fun setup() {
-        userRepository.deleteAll()
+        appSetupService.setupApp(appSetup)
     }
 
     @Test
-    fun `Assert application is setup correctly`() {
-        val entity = restTemplate.postForEntity(
-            "/api/public/setup",
-            TestDataUtils.generateAppSetup(),
-            String::class.java)
-        assertThat(entity.statusCode).isEqualTo(HttpStatus.OK)
+    fun `Assert user can authenticate`() {
+        with(appSetup.user) {
+            val entity = TestDataUtils.loginWithCredentials(restTemplate, username, password)
+            assertThat(entity.statusCode).isEqualTo(HttpStatus.OK)
+        }
     }
 
     @Test
-    fun `Assert application is already set up`() {
+    fun `Assert user cannot authenticate`() {
         val entity = restTemplate.postForEntity(
-            "/api/public/setup",
-            TestDataUtils.generateAppSetup(),
+            "/api/public/auth/login?username=otherUser&password=somePassword",
+            null,
             String::class.java)
-        assertThat(entity.statusCode).isEqualTo(HttpStatus.CONFLICT)
+        assertThat(entity.statusCode).isEqualTo(HttpStatus.UNAUTHORIZED)
     }
 
     @AfterAll

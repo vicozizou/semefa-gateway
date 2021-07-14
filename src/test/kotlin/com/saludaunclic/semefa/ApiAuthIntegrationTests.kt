@@ -22,7 +22,7 @@ class ApiAuthIntegrationTests(
     @Autowired val appSetupService: AppSetupService,
     @Autowired val userRepository: UserRepository
 ) {
-    val appSetup: AppSetupDto = TestDataUtils.createAppSetup()
+    val appSetup: AppSetupDto = TestDataUtils.generateAppSetup()
 
     @BeforeAll
     fun setup() {

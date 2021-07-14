@@ -18,6 +18,8 @@ class DataFrameService(
     private val mqClient: MqClient,
     private val objectMapper: ObjectMapper
 ) {
+
+
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
     fun process271DataFrame(in271RegafiUpdate: In271RegafiUpdate): In997RegafiUpdate =
@@ -40,7 +42,9 @@ class DataFrameService(
             if (logger.isDebugEnabled) {
                 logger.debug("From bean to X12, bean: \n${objectMapper.writeValueAsString(this)}")
             }
-            extractX12(regafiUpdate271Service.beanToX12N(this), GatewayConstants.TAG_271)
+
+            val x12N: String = regafiUpdate271Service.beanToX12N(this);
+            extractX12(x12N, GatewayConstants.TAG_271)
                 .also {
                     if (logger.isDebugEnabled) {
                         logger.debug("From bean to X12, X12: \n$it")
@@ -67,7 +71,8 @@ class DataFrameService(
 
     private fun extractX12(xmlText: String, tag: String): String {
         logger.info("Extracting X12 from $xmlText with tag $tag")
-        val second = xmlText.split(tag)[1]
+        val split = xmlText.split(tag)
+        val second = split[if (split.size > 1) 1 else 0]
         return second
             .substring(1, second.length - 2)
             .also { logger.debug("X12 extracted: $this") }

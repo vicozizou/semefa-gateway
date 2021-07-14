@@ -1,8 +1,5 @@
-package com.saludaunclic.semefa
-
 import com.saludaunclic.semefa.gateway.GatewayApplication
 import com.saludaunclic.semefa.gateway.repository.UserRepository
-import com.saludaunclic.semefa.util.TestDataUtils
 import org.assertj.core.api.AssertionsForInterfaceTypes.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -12,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.ContextConfiguration
+import util.TestDataUtils
 
 @ContextConfiguration
 @SpringBootTest(classes = [ GatewayApplication::class ], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
