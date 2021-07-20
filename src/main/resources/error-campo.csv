@@ -1,14 +1,14 @@
 codigo|CAMPO
-001|Transacción
+001|Transacciï¿½n
 002|ID del remitente o emisor
 003|ID Receptor
 004|Fecha
 005|Hora
 006|Correlativo
-007|Identificación única de transacción
+007|Identificaciï¿½n ï¿½nica de transacciï¿½n
 008|Finalidad 
 009|Calificador del remitente o emisor
-010|Tipo de Operación
+010|Tipo de Operaciï¿½n
 101|CODIGO_PAIS_AFILIADO
 102|TIPO_DOCUMENTO_AFILIADO
 103|NUMERO_DOCUMENTO_AFILIADO
@@ -63,9 +63,12 @@ codigo|CAMPO
 230|FECHA_NACIMIENTO_CONTRATANTE
 231|FECHA_ACTUALIZACION
 232|HORA_ACTUALIZACION
-100|Representa la combinación de campos que identifica la clave unica de la persona afiliada
-200|Representa la combinación de campos que identifica la clave unica de cada afiliación que cuenta un afiliado
-300|Representa la combinación de campos que identifica la identificación del tutor
-400|Representa la combinación de campos que identifica la identificacion del afiliado a actualizar
-500|Representa la combinación de campos que identifica la identificación del contratante
-600|Representa la combinación de campos que identifica la identificación del titular
+100|Representa la combinaciï¿½n de campos que identifica la clave unica de la persona afiliada
+200|Representa la combinaciï¿½n de campos que identifica la clave unica de cada afiliaciï¿½n que cuenta un afiliado
+300|Representa la combinaciï¿½n de campos que identifica la identificaciï¿½n del tutor
+400|Representa la combinaciï¿½n de campos que identifica la identificacion del afiliado a actualizar
+500|Representa la combinaciï¿½n de campos que identifica la identificaciï¿½n del contratante
+600|Representa la combinaciï¿½n de campos que identifica la identificaciï¿½n del titular
+700|Representa la combinaciÃ³n de campos que identifica la Fecha de validaciÃ³n con Reniec con Fecha de actualizaciÃ³n
+800|Representa la combinaciÃ³n de campos que identifica la Fecha de inicio de AfiliaciÃ³n con Fecha de fin de AfiliaciÃ³n
+900|Representa la combinaciÃ³n de campos que identifica la Fecha de inicio de Latencia con Fecha de fin de Latencia

@@ -20,6 +20,7 @@ class MqClient(val mqClientConfig: MqClientConfig) {
         const val NUMBER_OF_GET_TRIES = 3
         const val CHARACTER_SET = 819
         const val ENCODING = 273
+        const val WAIT_INTERVAL = 1000
     }
 
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
@@ -45,11 +46,11 @@ class MqClient(val mqClientConfig: MqClientConfig) {
                 """.trimIndent())
             }
         }
-    private val messageOptions = MQGetMessageOptions()
+    private fun createMessageOptions(): MQGetMessageOptions = MQGetMessageOptions()
         .apply {
             matchOptions = CMQC.MQMO_MATCH_MSG_ID
             options = CMQC.MQGMO_WAIT
-            waitInterval = 1000
+            waitInterval = WAIT_INTERVAL
         }
 
     fun sendMessageSync(message: String): Map<String, String> {
@@ -67,11 +68,11 @@ class MqClient(val mqClientConfig: MqClientConfig) {
                 logger.info("Connected to: ${this.queueManager}")
             }
 
-            queueIn = accessQueue(queueManager, true)
+            queueIn = accessQueue(queueManager, mqClientConfig.queueIn, CMQC.MQOO_OUTPUT)
             putMessage = createPutMessage(message)
             queueIn?.put(putMessage)
 
-            queueOut = accessQueue(queueManager, false)
+            queueOut = accessQueue(queueManager, mqClientConfig.queueOut, CMQC.MQOO_INPUT_AS_Q_DEF)
             getMessage = createGetMessage(putMessage)
             fetchResponse(queueOut, getMessage)
 
@@ -83,21 +84,18 @@ class MqClient(val mqClientConfig: MqClientConfig) {
         return response
     }
 
-    private fun accessQueue(queueManager: MQQueueManager?, isIn: Boolean): MQQueue? =
+    private fun accessQueue(queueManager: MQQueueManager?, queueName: String, partialOptions: Int): MQQueue? =
         with(mqClientConfig) {
-            val name = if (isIn) queueIn else queueOut
-            logger.info("Accessing queue $name.. ")
-            val queue = queueManager?.accessQueue(
-                name,
-                (if (isIn) CMQC.MQOO_OUTPUT else CMQC.MQOO_INPUT_AS_Q_DEF) or CMQC.MQOO_FAIL_IF_QUIESCING)
-            logger.info("Queue $name accessed")
+            logger.info("Accessing queue $queueName.. ")
+            val queue = queueManager?.accessQueue(queueName, partialOptions or CMQC.MQOO_FAIL_IF_QUIESCING)
+            logger.info("Queue $queueName accessed")
             queue
         }
 
     private fun fetchResponse(queueOut: MQQueue?, message: MQMessage?) {
         for(i in 1..NUMBER_OF_GET_TRIES) {
             try {
-                queueOut?.get(message, messageOptions)
+                queueOut?.get(message, createMessageOptions())
                 break
             } catch (e: Exception) {
                 logger.info("Attempt #$i to fetch response message has failed")
@@ -119,7 +117,7 @@ class MqClient(val mqClientConfig: MqClientConfig) {
         val xmlDataFrame = message.readStringOfByteLength(message.dataLength)
         logger.info("Message got: $xmlDataFrame")
         val messageId = String(Hex.encode(message.messageId))
-        logger.info("Msg Id: $messageId")
+        logger.info("Msg Id: [ $messageId ]")
 
         response[GatewayConstants.MESSAGE_ID_KEY] = messageId
         response[GatewayConstants.MESSAGE_KEY] = xmlDataFrame
@@ -163,6 +161,8 @@ class MqClient(val mqClientConfig: MqClientConfig) {
                 characterSet = CHARACTER_SET
                 encoding = ENCODING
                 messageId = message.messageId
-                logger.info("Message: [ ${message.messageId} ]")
+                if (logger.isDebugEnabled) {
+                    logger.debug("Message: [ ${message.messageId} ]")
+                }
             }
 }

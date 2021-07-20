@@ -18,12 +18,22 @@ class DataFrameService(
     private val mqClient: MqClient,
     private val objectMapper: ObjectMapper
 ) {
-
-
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
     fun process271DataFrame(in271RegafiUpdate: In271RegafiUpdate): In997RegafiUpdate =
         processResponse(putAndGetMessage(processRequest(in271RegafiUpdate)))
+
+    private fun parseRequest(in271RegafiUpdate: In271RegafiUpdate) =
+        with(in271RegafiUpdate) {
+            """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <sus:BusqDatosAseguradoRequest xmlns:sus="http://www.susalud.gob.pe/acreditacion/BusqDatosAseguradoRequest.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.susalud.gob.pe/acreditacion/BusqDatosAseguradoRequest.xsd ../MsgSetProjBusqDatosAseguradoRequest/importFiles/pe/gob/susalud/www/acreditacion/busqdatosaseguradorequestxsd/BusqDatosAseguradoRequest.xsd ">
+                  <txNombre>$noTransaccion</txNombre>
+                  <coRemitente>$idRemitente</coRemitente>
+                  <txPeticion>${regafiUpdate271Service.beanToX12N(this)}</txPeticion>
+                </sus:BusqDatosAseguradoRequest>
+                  """.trimIndent()
+        }
 
     private fun putAndGetMessage(dataFrame: String): Map<String, String> =
         with(dataFrame) {
@@ -43,8 +53,8 @@ class DataFrameService(
                 logger.debug("From bean to X12, bean: \n${objectMapper.writeValueAsString(this)}")
             }
 
-            val x12N: String = regafiUpdate271Service.beanToX12N(this);
-            extractX12(x12N, GatewayConstants.TAG_271)
+            val xml: String = parseRequest(this)
+            extractX12(xml, GatewayConstants.TAG_271)
                 .also {
                     if (logger.isDebugEnabled) {
                         logger.debug("From bean to X12, X12: \n$it")
@@ -70,7 +80,10 @@ class DataFrameService(
         }
 
     private fun extractX12(xmlText: String, tag: String): String {
-        logger.info("Extracting X12 from $xmlText with tag $tag")
+        if (logger.isDebugEnabled) {
+            logger.debug("Extracting X12 from $xmlText with tag $tag")
+        }
+
         val split = xmlText.split(tag)
         val second = split[if (split.size > 1) 1 else 0]
         return second

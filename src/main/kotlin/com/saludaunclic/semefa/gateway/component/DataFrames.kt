@@ -128,12 +128,12 @@ class DataFrames(val errors: Errors) {
         with(excepcion) {
             listOf<String>(
                 coCampoErr,
-                errors.getErrorField(coCampoErr) ?: "",
+                errors.getFieldError(coCampoErr.toInt()) ?: "",
                 isFlagExcepcion.toString(),
                 inCoErrorEncontrado,
-                errors.getErrorDescription(inCoErrorEncontrado) ?: "",
+                errors.getFieldErrorRule(inCoErrorEncontrado.toInt()) ?: "",
                 inCoErrorEncontrado,
-                errors.getErrorDescription(inCoErrorEncontrado) ?: "",
+                errors.getFieldErrorRule(inCoErrorEncontrado.toInt()) ?: "",
                 pkAfiliado,
                 pkAfiliadopkAfiliacion
             )

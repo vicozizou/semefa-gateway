@@ -18,3 +18,17 @@ CREATE TABLE IF NOT EXISTS app_role (
     FOREIGN KEY (user_id)
         REFERENCES app_user (id)
 );
+
+-- Field Error table
+CREATE TABLE IF NOT EXISTS field_error (
+    id INT NOT NULL,
+    name VARCHAR(256),
+    PRIMARY KEY (id)
+);
+
+-- Field Error Rule table
+CREATE TABLE IF NOT EXISTS field_error_rule (
+    id INT NOT NULL,
+    description VARCHAR(256),
+    PRIMARY KEY (id)
+);

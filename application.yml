@@ -23,9 +23,6 @@ spring:
     hikari:
       connection-timeout: 20000
       maximum-pool-size: 8
-errors:
-  field-error-file: ${FIELD_ERROR_FILE:classpath:error-campo.csv}
-  description-error-file: ${DESCRIPTION_ERROR_FILE:classpath:error-descripcion.csv}
 mq:
   queue-manager: ${MQ_QUEUE_MANAGER}
   queue-in: ${MQ_QUEUE_IN}
