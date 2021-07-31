@@ -17,10 +17,10 @@ import java.util.concurrent.TimeUnit
 @Component
 class MqClient(val mqClientConfig: MqClientConfig) {
     companion object {
-        const val NUMBER_OF_GET_TRIES = 3
+        const val NUMBER_OF_GET_TRIES = 1
         const val CHARACTER_SET = 819
         const val ENCODING = 273
-        const val WAIT_INTERVAL = 1000
+        const val WAIT_INTERVAL = 3000
     }
 
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
@@ -45,12 +45,6 @@ class MqClient(val mqClientConfig: MqClientConfig) {
                     channel: $channel
                 """.trimIndent())
             }
-        }
-    private fun createMessageOptions(): MQGetMessageOptions = MQGetMessageOptions()
-        .apply {
-            matchOptions = CMQC.MQMO_MATCH_MSG_ID
-            options = CMQC.MQGMO_WAIT
-            waitInterval = WAIT_INTERVAL
         }
 
     fun sendMessageSync(message: String): Map<String, String> {
@@ -83,6 +77,13 @@ class MqClient(val mqClientConfig: MqClientConfig) {
 
         return response
     }
+
+    private fun createMessageOptions(): MQGetMessageOptions = MQGetMessageOptions()
+        .apply {
+            matchOptions = CMQC.MQMO_MATCH_MSG_ID
+            options = CMQC.MQGMO_WAIT
+            waitInterval = WAIT_INTERVAL
+        }
 
     private fun accessQueue(queueManager: MQQueueManager?, queueName: String, partialOptions: Int): MQQueue? =
         with(mqClientConfig) {
@@ -123,26 +124,6 @@ class MqClient(val mqClientConfig: MqClientConfig) {
         response[GatewayConstants.MESSAGE_KEY] = xmlDataFrame
     }
 
-    private fun closeResources(putMessage: MQMessage?,
-                               getMessage: MQMessage?,
-                               queueIn: MQQueue?,
-                               queueOut: MQQueue?,
-                               queueManager: MQQueueManager?) {
-        // Clear messages
-        logger.info("Clear message put")
-        putMessage?.clearMessage()
-        logger.info("Clear message get")
-        getMessage?.clearMessage()
-        // Close the queues
-        logger.info("Closing the queueIn")
-        queueIn?.close()
-        logger.info("Closing the queueOut")
-        queueOut?.close()
-        // Disconnect from the QueueManager
-        logger.info("Disconnecting from the Queue Manager")
-        queueManager?.disconnect()
-    }
-
     private fun createPutMessage(message: String): MQMessage =
         MQMessage()
             .apply {
@@ -165,4 +146,24 @@ class MqClient(val mqClientConfig: MqClientConfig) {
                     logger.debug("Message: [ ${message.messageId} ]")
                 }
             }
+
+    private fun closeResources(putMessage: MQMessage?,
+                               getMessage: MQMessage?,
+                               queueIn: MQQueue?,
+                               queueOut: MQQueue?,
+                               queueManager: MQQueueManager?) {
+        // Clear messages
+        logger.info("Clear message put")
+        putMessage?.clearMessage()
+        logger.info("Clear message get")
+        getMessage?.clearMessage()
+        // Close the queues
+        logger.info("Closing the queueIn")
+        queueIn?.close()
+        logger.info("Closing the queueOut")
+        queueOut?.close()
+        // Disconnect from the QueueManager
+        logger.info("Disconnecting from the Queue Manager")
+        queueManager?.disconnect()
+    }
 }

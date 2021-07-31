@@ -10,6 +10,7 @@ import pe.gob.susalud.jr.transaccion.susalud.bean.In271RegafiUpdate
 import pe.gob.susalud.jr.transaccion.susalud.bean.In997RegafiUpdate
 import pe.gob.susalud.jr.transaccion.susalud.service.RegafiUpdate271Service
 import pe.gob.susalud.jr.transaccion.susalud.service.RegafiUpdate997Service
+import java.util.*
 
 @Service
 class DataFrameService(
@@ -32,7 +33,23 @@ class DataFrameService(
                   <coRemitente>$idRemitente</coRemitente>
                   <txPeticion>${regafiUpdate271Service.beanToX12N(this)}</txPeticion>
                 </sus:BusqDatosAseguradoRequest>
-                  """.trimIndent()
+                  """
+                .trimIndent()
+                .replace(System.lineSeparator(), "")
+        }
+
+    private fun processRequest(in271RegafiUpdate: In271RegafiUpdate): String =
+        with(in271RegafiUpdate) {
+            if (logger.isDebugEnabled) {
+                logger.debug("From bean to X12, bean: \n${objectMapper.writeValueAsString(this)}")
+            }
+
+            parseRequest(this)
+                .also {
+                    if (logger.isDebugEnabled) {
+                        logger.debug("From bean to X12, X12: \n$it")
+                    }
+                }
         }
 
     private fun putAndGetMessage(dataFrame: String): Map<String, String> =
@@ -45,21 +62,6 @@ class DataFrameService(
             mqClient
                 .sendMessageSync(this)
                 .also { logger.info("=== End MQ Connection ===") }
-        }
-
-    private fun processRequest(in271RegafiUpdate: In271RegafiUpdate): String =
-        with(in271RegafiUpdate) {
-            if (logger.isDebugEnabled) {
-                logger.debug("From bean to X12, bean: \n${objectMapper.writeValueAsString(this)}")
-            }
-
-            val xml: String = parseRequest(this)
-            extractX12(xml, GatewayConstants.TAG_271)
-                .also {
-                    if (logger.isDebugEnabled) {
-                        logger.debug("From bean to X12, X12: \n$it")
-                    }
-                }
         }
 
     private fun processResponse(response: Map<String, String>): In997RegafiUpdate =
