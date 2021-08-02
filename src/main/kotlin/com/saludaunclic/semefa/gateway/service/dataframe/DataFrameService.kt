@@ -63,7 +63,7 @@ class DataFrameService(
                 .sendMessageSync(this)
                 .also { logger.info("=== End MQ Connection ===") }
         }
-
+    in271RegafiUpdateExcepcion
     private fun processResponse(response: Map<String, String>): In997RegafiUpdate =
         with(response) {
             val x12: String = extractX12(this[GatewayConstants.MESSAGE_KEY] ?: "", GatewayConstants.TAG_997)

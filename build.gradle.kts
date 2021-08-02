@@ -35,6 +35,7 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("javax.el:javax.el-api:3.0.1-b06")
     implementation("org.hibernate.validator:hibernate-validator:7.0.1.Final")
+    implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -52,6 +53,7 @@ dependencies {
     //runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:1.5.20")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.apache.httpcomponents:httpclient")
+    testImplementation("org.springframework.amqp:spring-rabbit-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
 }

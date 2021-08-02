@@ -37,3 +37,7 @@ jwt:
   expiration-sec: ${JWT_EXPIRATION_SEC:86400}
   clock-skew-sec: ${JWT_CLOCK_SKEW_SEC:300}
   secret: ${JWT_SECRET:changeme}
+queue:
+  regafi-queue: ${REGAFI_QUEUE:refagi_queue}
+  regafi-exchange: ${REGAFI_EXCHANGE:regafi_exchange}
+

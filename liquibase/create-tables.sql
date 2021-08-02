@@ -32,3 +32,17 @@ CREATE TABLE IF NOT EXISTS field_error_rule (
     description VARCHAR(256),
     PRIMARY KEY (id)
 );
+
+-- Data Frame Status table
+CREATE TABLE IF NOT EXISTS data_frame (
+    id VARCHAR(64) NOT NULL,
+    correlative VARCHAR(64),
+    ack VARCHAR(64),
+    `type` VARCHAR(8) NOT NULL,
+    status VARCHAR(16) NOT NULL,
+    ingress_date TIMESTAMP NOT NULL,
+    process_date TIMESTAMP,
+    error_code VARCHAR(8),
+    attempts INT,
+    PRIMARY KEY (id)
+);
