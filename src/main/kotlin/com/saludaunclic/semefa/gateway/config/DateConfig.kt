@@ -5,7 +5,7 @@ import com.saludaunclic.semefa.gateway.service.date.DefaultDateService
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import java.util.TimeZone
+import java.util.*
 
 @Configuration
 @ConfigurationProperties(prefix = "date")

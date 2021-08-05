@@ -13,6 +13,7 @@ class Errors(
     companion object {
         val lock = Object()
     }
+
     private lateinit var fieldErrorMap: Map<Int, String>
     private lateinit var fieldErrorRuleMap: Map<Int, String>
 

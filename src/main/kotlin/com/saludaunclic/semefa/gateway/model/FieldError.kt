@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 
-@Table
+@Table("field_error")
 data class FieldError(
     @Id var id: Int,
     @Column var name: String

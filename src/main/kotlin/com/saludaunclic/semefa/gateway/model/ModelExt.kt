@@ -1,7 +1,11 @@
 package com.saludaunclic.semefa.gateway.model
 
 import com.saludaunclic.semefa.gateway.dto.RoleDto
+import com.saludaunclic.semefa.gateway.dto.SacIn997RegafiUpdate
+import com.saludaunclic.semefa.gateway.dto.SacIn997RegafiUpdateExcepcion
 import com.saludaunclic.semefa.gateway.dto.UserDto
+import pe.gob.susalud.jr.transaccion.susalud.bean.In997RegafiUpdate
+import pe.gob.susalud.jr.transaccion.susalud.bean.In997RegafiUpdateExcepcion
 
 fun toModel(role: RoleDto): Role = Role(role.id, role.name)
 
@@ -30,3 +34,29 @@ fun fromModel(user: User): UserDto =
             roles = roles.map { fromModel(it) }.toSet()
         )
     }
+
+fun toSac997UpdateException(exception: In997RegafiUpdateExcepcion): SacIn997RegafiUpdateExcepcion =
+    SacIn997RegafiUpdateExcepcion().apply {
+        excBD = exception.excBD
+        coCampoErr = exception.coCampoErr
+        inCoErrorEncontrado = exception.inCoErrorEncontrado
+        pkAfiliado = exception.pkAfiliado
+        pkAfiliadopkAfiliacion = exception.pkAfiliadopkAfiliacion
+    }
+
+fun toSac997Update(messageId: String, update: In997RegafiUpdate): SacIn997RegafiUpdate =
+    SacIn997RegafiUpdate(
+        messageId,
+        update.in271RegafiUpdateExcepcion.map { toSac997UpdateException(it) })
+        .apply {
+            noTransaccion = update.noTransaccion
+            idRemitente = update.idRemitente
+            idReceptor = update.idReceptor
+            feTransaccion = update.feTransaccion
+            hoTransaccion = update.hoTransaccion
+            idCorrelativo = update.idCorrelativo
+            idTransaccion = update.idTransaccion
+            excProceso = update.excProceso
+            nuControl = update.nuControl
+            nuControlST = update.nuControlST
+        }

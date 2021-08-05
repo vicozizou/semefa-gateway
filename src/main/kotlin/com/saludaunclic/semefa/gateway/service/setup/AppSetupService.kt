@@ -1,6 +1,5 @@
 package com.saludaunclic.semefa.gateway.service.setup
 
-import com.saludaunclic.semefa.gateway.GatewayConstants
 import com.saludaunclic.semefa.gateway.dto.AppSetupDto
 import com.saludaunclic.semefa.gateway.model.Role
 import com.saludaunclic.semefa.gateway.model.UserStatus
@@ -24,7 +23,7 @@ class AppSetupService(private val userService: UserService) {
 
         logger.info("Attempting to setup application with user: $appSetup")
         val user = userService.save(toModel(appSetup.user).apply {
-            roles = setOf(Role(name = GatewayConstants.SUPER_ROLE))
+            roles = setOf(Role(name = Role.SUPER_ROLE))
             status = UserStatus.ENABLED
         })
 

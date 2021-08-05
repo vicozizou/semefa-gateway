@@ -1,7 +1,7 @@
 package com.saludaunclic.semefa.gateway.service.date
 
 import java.time.LocalDateTime
-import java.util.Date
+import java.util.*
 
 interface DateService {
     fun now(): LocalDateTime

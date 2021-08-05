@@ -4,11 +4,11 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet id="1" author="vicozizou">
-        <sqlFile path="create-tables.sql"/>
+        <sqlFile path="create-tables.sql" />
     </changeSet>
 
     <changeSet id="2" author="vicozizou">
-        <sqlFile path="init-data.sql"/>
+        <sqlFile path="init-data.sql" />
     </changeSet>
 
 </databaseChangeLog>

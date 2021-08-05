@@ -6,7 +6,7 @@ import org.springframework.security.authentication.dao.AbstractUserDetailsAuthen
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Component
-import java.util.Optional
+import java.util.*
 
 @Component
 class TokenAuthenticationProvider(val userAuthenticationService: UserAuthenticationService):

@@ -10,6 +10,9 @@ data class Role(
     @Id var id: Int? = null,
     @Column var name: String
 ): GrantedAuthority {
+    companion object {
+        const val SUPER_ROLE = "SUPER"
+    }
     override fun getAuthority(): String = name
 
     override fun equals(other: Any?): Boolean {

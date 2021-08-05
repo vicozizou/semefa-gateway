@@ -5,18 +5,19 @@ import com.ibm.mq.MQMessage
 import com.ibm.mq.MQQueue
 import com.ibm.mq.MQQueueManager
 import com.ibm.mq.constants.CMQC
-import com.saludaunclic.semefa.gateway.GatewayConstants
 import com.saludaunclic.semefa.gateway.config.MqClientConfig
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.security.crypto.codec.Hex
 import org.springframework.stereotype.Component
-import java.util.Hashtable
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 @Component
 class MqClient(val mqClientConfig: MqClientConfig) {
     companion object {
+        const val MESSAGE_ID_KEY = "MsgId"
+        const val MESSAGE_KEY = "Msg"
         const val NUMBER_OF_GET_TRIES = 1
         const val CHARACTER_SET = 819
         const val ENCODING = 273
@@ -116,12 +117,14 @@ class MqClient(val mqClientConfig: MqClientConfig) {
 
         logger.info("Ready message fetch")
         val xmlDataFrame = message.readStringOfByteLength(message.dataLength)
-        logger.info("Message got: $xmlDataFrame")
+        if (logger.isDebugEnabled) {
+            logger.debug("Message got: $xmlDataFrame")
+        }
         val messageId = String(Hex.encode(message.messageId))
         logger.info("Msg Id: [ $messageId ]")
 
-        response[GatewayConstants.MESSAGE_ID_KEY] = messageId
-        response[GatewayConstants.MESSAGE_KEY] = xmlDataFrame
+        response[MESSAGE_ID_KEY] = messageId
+        response[MESSAGE_KEY] = xmlDataFrame
     }
 
     private fun createPutMessage(message: String): MQMessage =
@@ -132,7 +135,6 @@ class MqClient(val mqClientConfig: MqClientConfig) {
                 encoding = ENCODING
                 format = CMQC.MQFMT_STRING
                 writeString(message)
-                logger.info("Message: [ $message ]")
             }
 
     private fun createGetMessage(message: MQMessage): MQMessage =
