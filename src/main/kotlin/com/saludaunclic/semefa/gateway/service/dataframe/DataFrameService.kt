@@ -55,20 +55,17 @@ class DataFrameService(
             fallback997(ex, persistDataFrame(createDataFrame(messageId).apply { status = DataFrameStatus.PENDING }))
         }
 
-    private fun createDataFrame(messageId: String): DataFrame {
-        val existent: Optional<DataFrame> = dataFrameRepository.findById(messageId)
-        return (if (existent.isPresent) {
-            existent.get()
-        } else {
-            DataFrame().apply {
-                id = messageId
-                type = DataFrameType.UPDATE_271
-                processDate = Timestamp(System.currentTimeMillis())
-            }
-        }).apply {
-            attempts += 1
-        }
-    }
+    private fun createDataFrame(messageId: String): DataFrame =
+        dataFrameRepository
+            .findByMessageId(messageId)
+            .orElse(
+                DataFrame().apply {
+                    this.messageId = messageId
+                    type = DataFrameType.UPDATE_271
+                    processDate = Timestamp(System.currentTimeMillis())
+                }.apply {
+                    attempts += 1
+                })
 
     private fun persistDataFrame(dataFrame: DataFrame): DataFrame = dataFrameRepository.save(dataFrame)
 

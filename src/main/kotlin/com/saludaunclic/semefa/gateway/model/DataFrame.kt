@@ -7,7 +7,8 @@ import java.sql.Timestamp
 
 @Table("data_frame")
 data class DataFrame(
-    @Id var id: String? = null,
+    @Id var id: Long? = null,
+    @Column var messageId: String? = null,
     @Column var correlative: String? = null,
     @Column var ack: String? = null,
     @Column var type: DataFrameType? = null,

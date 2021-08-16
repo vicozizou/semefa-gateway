@@ -35,12 +35,15 @@ CREATE TABLE IF NOT EXISTS field_error_rule (
 
 -- Data Frame Status table
 CREATE TABLE IF NOT EXISTS data_frame (
-    id VARCHAR(64) NOT NULL,
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    message_id VARCHAR(64) NOT NULL,
     correlative VARCHAR(64),
     ack VARCHAR(64),
-    `type` VARCHAR(8) NOT NULL,
+    `type` VARCHAR(16) NOT NULL,
     status VARCHAR(16) NOT NULL,
     process_date TIMESTAMP,
-    attempts INT,
+    attempts INT NOT NULL,
     PRIMARY KEY (id)
 );
+
+CREATE UNIQUE INDEX message_id_unique_idx ON data_frame (message_id);
