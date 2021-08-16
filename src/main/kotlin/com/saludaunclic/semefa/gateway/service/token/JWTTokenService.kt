@@ -8,7 +8,7 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm.HS256
 import io.jsonwebtoken.impl.compression.GzipCompressionCodec
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.Date
 
 @Service
 class JWTTokenService(

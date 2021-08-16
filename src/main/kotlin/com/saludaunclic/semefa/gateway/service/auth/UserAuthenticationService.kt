@@ -1,7 +1,7 @@
 package com.saludaunclic.semefa.gateway.service.auth
 
 import com.saludaunclic.semefa.gateway.model.User
-import java.util.*
+import java.util.Optional
 
 interface UserAuthenticationService {
     fun login(username: String, password: String): Optional<String>

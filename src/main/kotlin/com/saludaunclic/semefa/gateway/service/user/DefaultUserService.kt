@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.Optional
 
 @Service
 class DefaultUserService(
@@ -17,7 +17,6 @@ class DefaultUserService(
 ): UserService {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
-    @Throws(ServiceException::class)
     override fun save(user: User): User = _save(normalize(user))
 
     override fun find(id: Int): Optional<User> = userRepository.findById(id)
@@ -31,7 +30,6 @@ class DefaultUserService(
 
     private fun _save(user: User): User = if (user.id != null) update(user) else create(user)
 
-    @Throws(ServiceException::class)
     fun create(user: User): User {
         logger.info("Creating user: $user")
 
@@ -43,7 +41,6 @@ class DefaultUserService(
         return createOrUpdate(user)
     }
 
-    @Throws(ServiceException::class)
     fun update(user: User): User {
         logger.info("Creating user: $user")
 

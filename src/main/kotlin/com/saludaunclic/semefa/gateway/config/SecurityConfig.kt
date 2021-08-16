@@ -45,7 +45,6 @@ class SecurityConfig(val provider: TokenAuthenticationProvider): WebSecurityConf
         web?.ignoring()?.requestMatchers(PUBLIC_URLS)
     }
 
-    @Throws(Exception::class)
     override fun configure(http: HttpSecurity?) {
         http
             ?.sessionManagement()
@@ -66,7 +65,6 @@ class SecurityConfig(val provider: TokenAuthenticationProvider): WebSecurityConf
     }
 
     @Bean
-    @Throws(Exception::class)
     fun restAuthenticationFilter(): TokenAuthenticationFilter? =
         TokenAuthenticationFilter(PROTECTED_URLS).apply {
             setAuthenticationManager(authenticationManager())

@@ -4,7 +4,7 @@ import com.saludaunclic.semefa.gateway.model.User
 import com.saludaunclic.semefa.gateway.service.token.TokenService
 import com.saludaunclic.semefa.gateway.service.user.UserService
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.Optional
 
 @Service
 class TokenAuthenticationService(

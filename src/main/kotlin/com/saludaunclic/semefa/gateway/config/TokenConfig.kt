@@ -2,7 +2,7 @@ package com.saludaunclic.semefa.gateway.config
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
-import java.util.*
+import java.util.Base64
 
 @Configuration
 class TokenConfig(@Value("\${jwt.issuer:saludaunclic}") val issuer: String,

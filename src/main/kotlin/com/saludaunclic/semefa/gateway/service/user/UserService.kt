@@ -1,7 +1,7 @@
 package com.saludaunclic.semefa.gateway.service.user
 
 import com.saludaunclic.semefa.gateway.model.User
-import java.util.*
+import java.util.Optional
 
 interface UserService {
     fun save(user: User): User

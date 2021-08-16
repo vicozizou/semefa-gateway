@@ -1,12 +1,12 @@
-package com.saludaunclic.semefa.gateway.component
+package com.saludaunclic.semefa.gateway.service.error
 
 import com.saludaunclic.semefa.gateway.repository.FieldErrorRepository
 import com.saludaunclic.semefa.gateway.repository.FieldErrorRuleRepository
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 import javax.annotation.PostConstruct
 
-@Component
-class Errors(
+@Service
+class ErrorsService(
     val fieldErrorRepository: FieldErrorRepository,
     val fieldErrorRuleRepository: FieldErrorRuleRepository
 ) {

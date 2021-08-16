@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/public/auth")
 class ApiAuthController(val userAuthenticationService: UserAuthenticationService) {
     @PostMapping("/login", produces = [ MediaType.APPLICATION_JSON_VALUE ])
-    @Throws(ServiceException::class)
     fun login(
         @RequestParam("username") username: String,
         @RequestParam("password") password: String

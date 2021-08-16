@@ -1,0 +1,87 @@
+package com.saludaunclic.semefa.gateway.service.mq
+
+import com.ibm.mq.MQMessage
+import com.ibm.mq.MQQueue
+import com.ibm.mq.MQQueueManager
+import com.ibm.mq.constants.CMQC
+import com.saludaunclic.semefa.gateway.config.MqClientConfig
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import java.util.Hashtable
+
+class QueueManagerWrapper(private val mqClientConfig: MqClientConfig) {
+    private val logger: Logger = LoggerFactory.getLogger(javaClass)
+
+    lateinit var queueManager: MQQueueManager
+    lateinit var queueIn: MQQueue
+    lateinit var queueOut: MQQueue
+    lateinit var putMessage: MQMessage
+    lateinit var getMessage: MQMessage
+
+    fun wrap(connectionProps: Hashtable<String, Any>): QueueManagerWrapper =
+        setAndChain {
+            queueManager = MQQueueManager(mqClientConfig.queueManager, connectionProps)
+                .also { logger.info("Connected to: ${mqClientConfig.queueManager}") }
+        }.apply {
+            queueIn = accessQueue(mqClientConfig.queueIn, CMQC.MQOO_OUTPUT)
+            queueOut = accessQueue(mqClientConfig.queueOut, CMQC.MQOO_INPUT_AS_Q_DEF)
+        }
+
+    fun closeResources() {
+        // Clear messages
+        try {
+            logger.info("Clear put message")
+            if (this::putMessage.isInitialized) {
+                putMessage.clearMessage()
+            }
+        } catch (ex: Exception) {
+            logger.error("Error clearing message put")
+        }
+        try {
+            logger.info("Clear get message")
+            getMessage.clearMessage()
+        } catch (ex: Exception) {
+            logger.error("Error clearing get message")
+        }
+        // Close the queues
+        try {
+            logger.info("Closing the queueIn")
+            queueIn.close()
+        } catch (ex: Exception) {
+            logger.error("Error closing queueIn")
+        }
+        try {
+            logger.info("Closing the queueOut")
+            queueOut.close()
+        } catch (ex: Exception) {
+            logger.error("Error closing queueOut")
+        }
+        // Disconnect from the QueueManager
+        try {
+            logger.info("Disconnecting from the Queue Manager")
+            queueManager.disconnect()
+        } catch (ex: Exception) {
+            logger.error("Error disconnecting Queue Manager")
+        }
+    }
+
+    private fun accessQueue(queueName: String, partialOptions: Int): MQQueue =
+        with(queueName) {
+            logger.info("Accessing queue $this.. ")
+            queueManager
+                .accessQueue(this, partialOptions or CMQC.MQOO_FAIL_IF_QUIESCING)
+                .also { logger.info("Queue $this accessed") }
+        }
+
+    private fun setAndChain(setter: (QueueManagerWrapper) -> Unit): QueueManagerWrapper =
+        with(this) {
+            setter(this)
+            this
+        }
+
+    private fun whenInitialized(c: (Any) -> Unit) {
+        if (this::putMessage.isInitialized) {
+
+        }
+    }
+}

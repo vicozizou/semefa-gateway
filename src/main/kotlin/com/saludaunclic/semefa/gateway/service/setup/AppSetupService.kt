@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service
 class AppSetupService(private val userService: UserService) {
     private val logger: Logger = LoggerFactory.getLogger(javaClass)
 
-    @Throws(ServiceException::class)
     fun setupApp(appSetup: AppSetupDto): String {
         if (userService.userCount() > 0) {
             throw ServiceException("Aplicación ya tiene usuario inicial definido", HttpStatus.CONFLICT)
