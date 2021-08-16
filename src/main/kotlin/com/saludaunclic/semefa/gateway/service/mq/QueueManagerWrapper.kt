@@ -30,36 +30,44 @@ class QueueManagerWrapper(private val mqClientConfig: MqClientConfig) {
     fun closeResources() {
         // Clear messages
         try {
-            logger.info("Clear put message")
             if (this::putMessage.isInitialized) {
+                logger.info("Clear put message")
                 putMessage.clearMessage()
             }
         } catch (ex: Exception) {
             logger.error("Error clearing message put")
         }
         try {
-            logger.info("Clear get message")
-            getMessage.clearMessage()
+            if (this::getMessage.isInitialized) {
+                logger.info("Clear get message")
+                getMessage.clearMessage()
+            }
         } catch (ex: Exception) {
             logger.error("Error clearing get message")
         }
         // Close the queues
         try {
-            logger.info("Closing the queueIn")
-            queueIn.close()
+            if (this::queueIn.isInitialized) {
+                logger.info("Closing the queueIn")
+                queueIn.close()
+            }
         } catch (ex: Exception) {
             logger.error("Error closing queueIn")
         }
         try {
-            logger.info("Closing the queueOut")
-            queueOut.close()
+            if (this::queueOut.isInitialized) {
+                logger.info("Closing the queueOut")
+                queueOut.close()
+            }
         } catch (ex: Exception) {
             logger.error("Error closing queueOut")
         }
         // Disconnect from the QueueManager
         try {
-            logger.info("Disconnecting from the Queue Manager")
-            queueManager.disconnect()
+            if (this::queueManager.isInitialized) {
+                logger.info("Disconnecting from the Queue Manager")
+                queueManager.disconnect()
+            }
         } catch (ex: Exception) {
             logger.error("Error disconnecting Queue Manager")
         }

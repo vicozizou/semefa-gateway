@@ -48,9 +48,9 @@ class DataFrameIntegrationTests(
     fun `Assert post a Regafi 271 payload`() {
         val payload = TestDataUtils.generateIn271RegafiUpdate()
         logger.info("Processing payload\n${objectMapper.writeValueAsString(payload)}")
-        val headers: HttpHeaders = HttpHeaders().also {
-            it.set(HttpHeaders.AUTHORIZATION, "Bearer $token")
-            it.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+        val headers: HttpHeaders = HttpHeaders().apply {
+            set(HttpHeaders.AUTHORIZATION, "Bearer $token")
+            set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         }
         val request: HttpEntity<In271RegafiUpdate> = HttpEntity(payload, headers)
         val entity = restTemplate.postForEntity("/api/regafi/update271", request, In997RegafiUpdate::class.java)

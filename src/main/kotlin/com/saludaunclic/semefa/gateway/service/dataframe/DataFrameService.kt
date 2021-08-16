@@ -4,7 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.saludaunclic.semefa.gateway.service.error.ErrorsService
 import com.saludaunclic.semefa.gateway.service.mq.MqClientService
 import com.saludaunclic.semefa.gateway.dto.SacIn997RegafiUpdate
+import com.saludaunclic.semefa.gateway.model.DataFrame
+import com.saludaunclic.semefa.gateway.model.DataFrameStatus
+import com.saludaunclic.semefa.gateway.model.DataFrameType
 import com.saludaunclic.semefa.gateway.model.toSac997Update
+import com.saludaunclic.semefa.gateway.repository.DataFrameRepository
 import com.saludaunclic.semefa.gateway.throwing.MqMaxAttemptReachedException
 import com.saludaunclic.semefa.gateway.throwing.ServiceException
 import org.slf4j.Logger
@@ -14,6 +18,8 @@ import org.springframework.stereotype.Service
 import pe.gob.susalud.jr.transaccion.susalud.bean.In271RegafiUpdate
 import pe.gob.susalud.jr.transaccion.susalud.service.RegafiUpdate271Service
 import pe.gob.susalud.jr.transaccion.susalud.service.RegafiUpdate997Service
+import java.sql.Timestamp
+import java.util.Optional
 
 @Service
 class DataFrameService(
@@ -21,6 +27,7 @@ class DataFrameService(
     private val regafiUpdate997Service: RegafiUpdate997Service,
     private val mqClientService: MqClientService,
     private val errorsService: ErrorsService,
+    private val dataFrameRepository: DataFrameRepository,
     private val objectMapper: ObjectMapper
 ) {
     companion object {
@@ -32,23 +39,44 @@ class DataFrameService(
 
     fun process271DataFrame(in271RegafiUpdate: In271RegafiUpdate): SacIn997RegafiUpdate =
         try {
-            processResponse(putAndGetMessage(processRequest(in271RegafiUpdate)))
+            val update271: SacIn997RegafiUpdate = processResponse(putAndGetMessage(processRequest(in271RegafiUpdate)))
+            persistDataFrame(createDataFrame(update271.idMensaje).apply { status = DataFrameStatus.PROCESSED })
+            update271
         } catch (ex: MqMaxAttemptReachedException) {
-            fallback997(ex)
+            fallback997(ex, persistDataFrame(createDataFrame(ex.messageId).apply { status = DataFrameStatus.PENDING }))
         }
 
     fun get271DataFrame(messageId: String): SacIn997RegafiUpdate =
         try {
-            processResponse(mqClientService.fetchMessage(messageId))
+            val get271 = processResponse(mqClientService.fetchMessage(messageId))
+            persistDataFrame(createDataFrame(messageId).apply { status = DataFrameStatus.PROCESSED })
+            get271
         } catch (ex: MqMaxAttemptReachedException) {
-            fallback997(ex)
+            fallback997(ex, persistDataFrame(createDataFrame(messageId).apply { status = DataFrameStatus.PENDING }))
         }
 
-    private fun fallback997(ex: MqMaxAttemptReachedException): SacIn997RegafiUpdate =
-        SacIn997RegafiUpdate()
+    private fun createDataFrame(messageId: String): DataFrame {
+        val existent: Optional<DataFrame> = dataFrameRepository.findById(messageId)
+        return (if (existent.isPresent) {
+            existent.get()
+        } else {
+            DataFrame().apply {
+                id = messageId
+                type = DataFrameType.UPDATE_271
+                processDate = Timestamp(System.currentTimeMillis())
+            }
+        }).apply {
+            attempts += 1
+        }
+    }
+
+    private fun persistDataFrame(dataFrame: DataFrame): DataFrame = dataFrameRepository.save(dataFrame)
+
+    private fun fallback997(ex: MqMaxAttemptReachedException, dataFrame: DataFrame): SacIn997RegafiUpdate =
+        SacIn997RegafiUpdate(ex.messageId)
             .apply {
-                idMensaje = ex.messageId
                 mensajeError = ex.message
+                intentos = dataFrame.attempts
             }
 
     private fun parseRequest(in271RegafiUpdate: In271RegafiUpdate): String =
@@ -78,8 +106,7 @@ class DataFrameService(
             logger.debug("Sending X12 message with this data: $this")
 
             try {
-                mqClientService
-                    .sendMessageSync(this)
+                mqClientService.sendMessageSync(this)
                     .also { logger.info("=== End MQ Connection ===") }
             } catch (ex: Exception) {
                 throw ServiceException("Error en comunicación con MQ", ex, HttpStatus.SERVICE_UNAVAILABLE)

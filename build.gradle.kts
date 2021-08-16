@@ -53,7 +53,6 @@ dependencies {
     //runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:1.5.20")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.apache.httpcomponents:httpclient")
-    testImplementation("org.springframework.amqp:spring-rabbit-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
 }

@@ -9,9 +9,9 @@ import java.io.Serializable
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class SacIn997RegafiUpdate(
-    @JsonProperty("idMensaje") var idMensaje: String? = null,
-    @JsonProperty("intentos") var intentos: Int? = null,
-    @JsonProperty("mensajeError") var mensajeError: String? = null,
+    @JsonProperty("idMensaje") val idMensaje: String,
     @JsonProperty("in271RegafiUpdateExcepcion")
-    var in271RegafiUpdateExcepcion: List<SacIn997RegafiUpdateExcepcion> = listOf()
+    var in271RegafiUpdateExcepcion: List<SacIn997RegafiUpdateExcepcion> = listOf(),
+    @JsonProperty("mensajeError") var mensajeError: String? = null,
+    @JsonProperty("intentos") var intentos: Int? = null
 ): In997RegafiUpdate(), Serializable

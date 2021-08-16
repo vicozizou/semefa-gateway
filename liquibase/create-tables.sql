@@ -40,9 +40,7 @@ CREATE TABLE IF NOT EXISTS data_frame (
     ack VARCHAR(64),
     `type` VARCHAR(8) NOT NULL,
     status VARCHAR(16) NOT NULL,
-    ingress_date TIMESTAMP NOT NULL,
     process_date TIMESTAMP,
-    error_code VARCHAR(8),
     attempts INT,
     PRIMARY KEY (id)
 );
