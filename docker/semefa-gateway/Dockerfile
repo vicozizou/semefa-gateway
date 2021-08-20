@@ -4,7 +4,7 @@ LABEL com.saludaunclic.contact="info@dotcms.com"
 LABEL com.saludaunclic.vendor="Salud a un Clic"
 LABEL com.saludaunclic.description="SAC Semefa Gateway"
 
-ARG BUILD_ID=master
+ARG BUILD_ID=HEAD
 ENV GRADLE_USER_HOME=/build/src/semefa-gateway/.gradle
 ENV GRADLE_OPTS="-Dfile.encoding=utf-8 -Xmx2g"
 
