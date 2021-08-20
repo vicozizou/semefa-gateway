@@ -86,10 +86,4 @@ class QueueManagerWrapper(private val mqClientConfig: MqClientConfig) {
             setter(this)
             this
         }
-
-    private fun whenInitialized(c: (Any) -> Unit) {
-        if (this::putMessage.isInitialized) {
-
-        }
-    }
 }

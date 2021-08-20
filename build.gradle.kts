@@ -30,7 +30,6 @@ val snippetsDir = extra["snippetsDir"]
 
 dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    // implementation("org.springframework.boot:spring-boot-starter-artemis")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("javax.el:javax.el-api:3.0.1-b06")
@@ -50,7 +49,6 @@ dependencies {
     implementation(files("libs/connector.jar"))
     implementation(files("libs/jr-afiliacion-susalud-1.0.0.jar"))
     runtimeOnly("mysql:mysql-connector-java")
-    //runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:1.5.20")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.apache.httpcomponents:httpclient")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

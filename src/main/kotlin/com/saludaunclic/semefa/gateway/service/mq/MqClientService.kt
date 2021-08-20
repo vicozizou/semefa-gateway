@@ -73,9 +73,12 @@ class MqClientService(val mqClientConfig: MqClientConfig) {
 
         try {
             wrapper.wrap(connectionProps)
-            return getMessageResponse(wrapper.queueOut, createPutMessage(messageId))
+            return getMessageResponse(wrapper.queueOut, createGetMessage(messageId))
         } catch (ex: MQException) {
-            throw ServiceException("Error conectándose a MQ", ex, HttpStatus.SERVICE_UNAVAILABLE)
+            throw ServiceException(
+                "Error obteniendo mensaje con id $messageId: ${ex.message}",
+                ex,
+                HttpStatus.SERVICE_UNAVAILABLE)
         } finally {
             wrapper.closeResources()
         }
@@ -98,8 +101,10 @@ class MqClientService(val mqClientConfig: MqClientConfig) {
             try {
                 queueOut.get(message, createMessageOptions())
                 return
-            } catch (e: Exception) {
-                logger.info("Attempt #$i to fetch response message has failed")
+            } catch (ex: MQException) {
+                throw ex
+            } catch (ex: Exception) {
+                logger.info("Attempt #$i to fetch response message has failed", ex)
                 if (i < NUMBER_OF_GET_TRIES) {
                     logger.info("Giving another try")
                     TimeUnit.SECONDS.sleep(1)
@@ -152,4 +157,6 @@ class MqClientService(val mqClientConfig: MqClientConfig) {
                 this.messageId = messageId
                 logger.debug("Message: [ ${this.messageId} ]")
             }
+
+    private fun createGetMessage(messageId: String): MQMessage = createGetMessage(Hex.decode(messageId))
 }

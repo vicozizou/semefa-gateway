@@ -19,6 +19,7 @@ import pe.gob.susalud.jr.transaccion.susalud.bean.In271RegafiUpdate
 import pe.gob.susalud.jr.transaccion.susalud.service.RegafiUpdate271Service
 import pe.gob.susalud.jr.transaccion.susalud.service.RegafiUpdate997Service
 import java.sql.Timestamp
+import java.util.Optional
 
 @Service
 class DataFrameService(
@@ -45,14 +46,23 @@ class DataFrameService(
             fallback997(ex, persistDataFrame(createDataFrame(ex.messageId).apply { status = DataFrameStatus.PENDING }))
         }
 
-    fun get271DataFrame(messageId: String): SacIn997RegafiUpdate =
+    fun get271DataFrame(messageId: String): SacIn997RegafiUpdate {
+        dataFrameRepository
+            .findByMessageId(messageId)
+            .ifPresent {
+                if (it.status == DataFrameStatus.PROCESSED) {
+                    throw ServiceException("Mensaje con id $messageId ya fue procesado", HttpStatus.NOT_FOUND)
+                }
+            }
+
         try {
             val get271 = processResponse(mqClientService.fetchMessage(messageId))
             persistDataFrame(createDataFrame(messageId).apply { status = DataFrameStatus.PROCESSED })
-            get271
+            return get271
         } catch (ex: MqMaxAttemptReachedException) {
-            fallback997(ex, persistDataFrame(createDataFrame(messageId).apply { status = DataFrameStatus.PENDING }))
+            return fallback997(ex, persistDataFrame(createDataFrame(messageId).apply { status = DataFrameStatus.PENDING }))
         }
+    }
 
     private fun createDataFrame(messageId: String): DataFrame =
         dataFrameRepository

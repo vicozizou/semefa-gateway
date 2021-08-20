@@ -24,12 +24,12 @@ spring:
       connection-timeout: 20000
       maximum-pool-size: 8
 mq:
-  queue-manager: ${MQ_QUEUE_MANAGER}
-  queue-in: ${MQ_QUEUE_IN}
-  queue-out: ${MQ_QUEUE_OUT}
-  channel: ${MQ_CHANNEL:SYSTEM.DEF.SVRCONN}
-  hostname: ${MQ_HOSTNAME:localhost}
-  port: ${MQ_PORT:1414}
+  queue-manager: ${MQ_QUEUE_MANAGER:QM.002.999.AF}
+  queue-in: ${MQ_QUEUE_IN:QL.CLI.SEMEFA.SUSALUD.AF.REQ}
+  queue-out: ${MQ_QUEUE_OUT:QL.CLI.SEMEFA.SUSALUD.AF.RES}
+  channel: ${MQ_CHANNEL:CH.CLIENTE.SEMEFA}
+  hostname: ${MQ_HOSTNAME:app3.susalud.gob.pe}
+  port: ${MQ_PORT:21437}
 date:
   time-zone: ${TIME_ZONE:UTC}
 jwt:
@@ -37,7 +37,3 @@ jwt:
   expiration-sec: ${JWT_EXPIRATION_SEC:86400}
   clock-skew-sec: ${JWT_CLOCK_SKEW_SEC:300}
   secret: ${JWT_SECRET:changeme}
-queue:
-  regafi-queue: ${REGAFI_QUEUE:refagi_queue}
-  regafi-exchange: ${REGAFI_EXCHANGE:regafi_exchange}
-
