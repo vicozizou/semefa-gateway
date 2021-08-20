@@ -11,7 +11,7 @@ ENV GRADLE_OPTS="-Dfile.encoding=utf-8 -Xmx2g"
 
 RUN apt update \
   && apt upgrade -y \
-  && apt install -y bash grep openssl git sed ca-certificates \
+  && apt install -y bash grep openssl git sed env ca-certificates \
   && update-ca-certificates
 
 RUN mkdir -p /build/src \
