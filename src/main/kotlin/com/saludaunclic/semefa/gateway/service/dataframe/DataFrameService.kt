@@ -19,7 +19,6 @@ import pe.gob.susalud.jr.transaccion.susalud.bean.In271RegafiUpdate
 import pe.gob.susalud.jr.transaccion.susalud.service.RegafiUpdate271Service
 import pe.gob.susalud.jr.transaccion.susalud.service.RegafiUpdate997Service
 import java.sql.Timestamp
-import java.util.Optional
 
 @Service
 class DataFrameService(
@@ -78,13 +77,13 @@ class DataFrameService(
 
     private fun parseRequest(in271RegafiUpdate: In271RegafiUpdate): String =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-            "<sus:Online271RegafiUpdateRequest " +
-                "xmlns:sus=\"http://www.susalud.gob.pe/Afiliacion/Online271RegafiUpdateRequest.xsd\" " +
-                "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
-                "xsi:schemaLocation=\"http://www.susalud.gob.pe/Afiliacion/Online271RegafiUpdateRequest.xsd../MsgSetProjOnline271RegafiUpdateRequest/importFiles/Online271RegafiUpdateRequest.xsd \">" +
-                "<txNombre>$TX_NAME</txNombre>" +
-                "<txPeticion>${regafiUpdate271Service.beanToX12N(in271RegafiUpdate)}</txPeticion>" +
-            "</sus:Online271RegafiUpdateRequest>"
+        "<sus:Online271RegafiUpdateRequest " +
+            "xmlns:sus=\"http://www.susalud.gob.pe/Afiliacion/Online271RegafiUpdateRequest.xsd\" " +
+            "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
+            "xsi:schemaLocation=\"http://www.susalud.gob.pe/Afiliacion/Online271RegafiUpdateRequest.xsd../MsgSetProjOnline271RegafiUpdateRequest/importFiles/Online271RegafiUpdateRequest.xsd \">" +
+            "<txNombre>$TX_NAME</txNombre>" +
+            "<txPeticion>${regafiUpdate271Service.beanToX12N(in271RegafiUpdate)}</txPeticion>" +
+        "</sus:Online271RegafiUpdateRequest>"
 
     private fun processRequest(in271RegafiUpdate: In271RegafiUpdate): String =
         with(in271RegafiUpdate) {
