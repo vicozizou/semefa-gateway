@@ -6,6 +6,8 @@ LABEL com.saludaunclic.description="SAC Semefa Gateway"
 
 ARG BUILD_ID=HEAD
 ARG PROFILE=dev
+ARG SERVER_PORT=9000
+ENV SERVER_PORT=${SERVER_PORT}
 ENV PROFILE=${PROFILE}
 ENV GRADLE_USER_HOME=/build/src/semefa-gateway/.gradle
 ENV GRADLE_OPTS="-Dfile.encoding=utf-8 -Xmx2g"
