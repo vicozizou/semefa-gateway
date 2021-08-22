@@ -1,6 +1,6 @@
 FROM adoptopenjdk/openjdk11:ubuntu
 
-LABEL com.saludaunclic.contact="info@dotcms.com"
+LABEL com.saludaunclic.contact="vico.zizou@gmail.com"
 LABEL com.saludaunclic.vendor="Salud a un Clic"
 LABEL com.saludaunclic.description="SAC Semefa Gateway"
 
