@@ -20,6 +20,7 @@ function buildByCommit {
   ./gradlew bootJar --no-daemon --build-cache
   cp ${src_folder}/build/libs/semefa-gateway-1.0.jar /app
   cp ${src_folder}/application.yml /app
+  ls -las /app
 }
 
 buildByCommit ${build_id}
