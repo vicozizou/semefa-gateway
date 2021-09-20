@@ -8,4 +8,5 @@ import java.util.Optional
 @Repository
 interface DataFrameRepository: CrudRepository<DataFrame, String> {
     fun findByMessageId(messageId: String): Optional<DataFrame>
+    fun findByCorrelativeId(correlativeId: String): Optional<DataFrame>
 }

@@ -9,7 +9,7 @@ import java.sql.Timestamp
 data class DataFrame(
     @Id var id: Long? = null,
     @Column var messageId: String? = null,
-    @Column var correlative: String? = null,
+    @Column var correlativeId: String? = null,
     @Column var ack: String? = null,
     @Column var type: DataFrameType? = null,
     @Column var status: DataFrameStatus? = null,

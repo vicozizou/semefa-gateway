@@ -4,9 +4,6 @@ services:
 
   semefa-gateway:
     image: vicozizou/semefa-gateway:latest
-    ports:
-      - 9000:9000
-      - 9001:9001
     environment:
       SERVER_PORT:
       ACTUATOR_PORT:
@@ -22,3 +19,7 @@ services:
       MQ_HOSTNAME:
       MQ_PORT:
       JWT_SECRET:
+    ports:
+      - 9000:9000
+      - 9001:9001
+    network_mode: host

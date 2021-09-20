@@ -9,6 +9,7 @@ import com.saludaunclic.semefa.gateway.model.DataFrameStatus
 import com.saludaunclic.semefa.gateway.model.DataFrameType
 import com.saludaunclic.semefa.gateway.model.toSac997Update
 import com.saludaunclic.semefa.gateway.repository.DataFrameRepository
+import com.saludaunclic.semefa.gateway.service.date.DateService
 import com.saludaunclic.semefa.gateway.throwing.MqMaxAttemptReachedException
 import com.saludaunclic.semefa.gateway.throwing.ServiceException
 import org.slf4j.Logger
@@ -18,8 +19,7 @@ import org.springframework.stereotype.Service
 import pe.gob.susalud.jr.transaccion.susalud.bean.In271RegafiUpdate
 import pe.gob.susalud.jr.transaccion.susalud.service.RegafiUpdate271Service
 import pe.gob.susalud.jr.transaccion.susalud.service.RegafiUpdate997Service
-import java.sql.Timestamp
-import java.util.Optional
+import java.util.UUID
 
 @Service
 class DataFrameService(
@@ -28,6 +28,7 @@ class DataFrameService(
     private val mqClientService: MqClientService,
     private val errorsService: ErrorsService,
     private val dataFrameRepository: DataFrameRepository,
+    private val dates: DateService,
     private val objectMapper: ObjectMapper
 ) {
     companion object {
@@ -39,11 +40,13 @@ class DataFrameService(
 
     fun process271DataFrame(in271RegafiUpdate: In271RegafiUpdate): SacIn997RegafiUpdate =
         try {
-            val update271: SacIn997RegafiUpdate = processResponse(putAndGetMessage(processRequest(in271RegafiUpdate)))
-            persistDataFrame(createDataFrame(update271.idMensaje).apply { status = DataFrameStatus.PROCESSED })
+            val update271 = processResponse(putAndGetMessage(processRequest(normalize(in271RegafiUpdate))))
+            persistDataFrame(
+                createDataFrame(update271.idMensaje, DataFrameStatus.PROCESSED)
+                    .apply { correlativeId = update271.idCorrelativo })
             update271
         } catch (ex: MqMaxAttemptReachedException) {
-            fallback997(ex, persistDataFrame(createDataFrame(ex.messageId).apply { status = DataFrameStatus.PENDING }))
+            fallback997(ex, persistDataFrame(createDataFrame(ex.messageId, DataFrameStatus.PENDING)))
         }
 
     fun get271DataFrame(messageId: String): SacIn997RegafiUpdate {
@@ -55,23 +58,34 @@ class DataFrameService(
                 }
             }
 
-        try {
+        return try {
             val get271 = processResponse(mqClientService.fetchMessage(messageId))
-            persistDataFrame(createDataFrame(messageId).apply { status = DataFrameStatus.PROCESSED })
-            return get271
+            persistDataFrame(createDataFrame(messageId, DataFrameStatus.PROCESSED))
+            get271
         } catch (ex: MqMaxAttemptReachedException) {
-            return fallback997(ex, persistDataFrame(createDataFrame(messageId).apply { status = DataFrameStatus.PENDING }))
+            fallback997(ex, persistDataFrame(createDataFrame(messageId, DataFrameStatus.PENDING)))
         }
     }
 
-    private fun createDataFrame(messageId: String): DataFrame =
+    private fun normalize(in271RegafiUpdate: In271RegafiUpdate): In271RegafiUpdate =
+        in271RegafiUpdate.apply {
+            if (idCorrelativo == null) {
+                idCorrelativo = UUID.randomUUID().toString()
+            }
+            val now = dates.now()
+            in271RegafiUpdate.feTransaccion = dates.formatDate(now)
+            in271RegafiUpdate.hoTransaccion = dates.formatTime(now)
+        }
+
+    private fun createDataFrame(messageId: String, status: DataFrameStatus): DataFrame =
         dataFrameRepository
             .findByMessageId(messageId)
             .orElse(
                 DataFrame().apply {
                     this.messageId = messageId
                     type = DataFrameType.UPDATE_271
-                    processDate = Timestamp(System.currentTimeMillis())
+                    this.status = status
+                    processDate = dates.nowTimestamp()
                 }.apply {
                     attempts += 1
                 })
