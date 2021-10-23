@@ -40,7 +40,7 @@ fi
 dbExists
 db_result=$?
 if [[ ${db_result} == 1 ]]; then
-  init_script=mysql/init.sql
+  init_script=../mysql/init.sql
   docker cp ${init_script} ${container_id}:${MYSQL_DB}-init.sql
   docker exec -t ${container_id} \
     /bin/sh -c "mysql \\
@@ -54,7 +54,7 @@ if [[ ${db_result} == 1 ]]; then
 fi
 
 pushd liquibase
-liquibase_context=${PWD}
+liquibase_context=../
 popd
 docker cp ${init_script} ${container_id}:${MYSQL_DB}-init.sql
 docker run --rm --name liquibase-migration \
@@ -69,4 +69,3 @@ docker run --rm --name liquibase-migration \
 echo "#########################################################################"
 echo "    ${MYSQL_DB} database migrated"
 echo "#########################################################################"
-

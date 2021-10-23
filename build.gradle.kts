@@ -5,6 +5,7 @@ plugins {
     id("org.springframework.boot") version "2.5.2"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("org.asciidoctor.convert") version "1.5.8"
+    id("no.nils.wsdl2java") version "0.12"
     kotlin("jvm") version "1.5.20"
     kotlin("plugin.spring") version "1.5.20"
 }
@@ -71,6 +72,17 @@ sourceSets {
             runtimeClasspath += output + compileClasspath + sourceSets["test"].runtimeClasspath
         }
     }
+}
+
+extra["cxfVersion"] = "3.3.2"
+extra["cxfPluginVersion"] = "3.2.2"
+
+wsdl2java {
+    wsdlDir = file("$projectDir/src/main/wsdl")
+    wsdlsToGenerate = listOf(
+        listOf("$wsdlDir/firstwsdl.wsdl"),
+        listOf("-xjc", "-b", "bindingfile.xml", "$wsdlDir/secondwsdl.wsdl")
+    )
 }
 
 tasks.withType<Test> {
